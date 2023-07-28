@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="27px" height="27px" viewBox="0 0 27 27" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.1 (51147) - http://www.bohemiancoding.com/sketch -->
+    <title>ns-chat-icon</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="NEW-CANVAS" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Parley-Chat-Designs-02" transform="translate(-531.000000, -717.000000)" fill="#FFFFFF" fill-rule="nonzero">
+            <g id="Mobiel---chat-Copy" transform="translate(107.000000, 71.000000)">
+                <g id="NS-ParleyChat-icon" transform="translate(410.000000, 630.000000)">
+                    <path d="M38.3,16 L16.7,16 C15.26,16 14,17.26 14,18.7 L14,31.3 C14,32.74 15.26,34 16.7,34 L23,34 L23,43 L32,34 L38.3,34 C39.74,34 41,32.74 41,31.3 L41,18.7 C41,17.26 39.74,16 38.3,16 Z M39.2,31.3 C39.2,31.84 38.84,32.2 38.3,32.2 L33.8,32.2 L32,32.2 L31.28,32.2 L24.8,38.68 L24.8,34 L24.8,32.2 L23,32.2 L16.7,32.2 C16.16,32.2 15.8,31.84 15.8,31.3 L15.8,18.7 C15.8,18.16 16.16,17.8 16.7,17.8 L38.3,17.8 C38.84,17.8 39.2,18.16 39.2,18.7 L39.2,31.3 Z" id="ns-chat-icon"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

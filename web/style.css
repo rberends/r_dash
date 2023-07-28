@@ -1,0 +1,77 @@
+body {
+  background-color: #3e2723;
+  font-family: Arial, sans-serif;
+}
+
+h2 {
+    -webkit-animation: fadeinout 4s linear forwards;
+    animation: fadeinout 4s linear forwards;
+      margin: 0;
+      object-fit:scale-down;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin-bottom: -50%
+      margin-right: -50%;
+      transform: translate(-50%, -50%);
+      padding-top: 250px;
+      color: white;
+      text-size: 50px;
+}
+
+
+.elementToFadeInAndOut {
+    -webkit-animation: fadeinout 4s linear forwards;
+    animation: fadeinout 4s linear forwards;
+      margin: 0;
+      width: 400px;
+      height: 600px;
+      object-fit:scale-down;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin-right: -50%;
+      transform: translate(-50%, -50%);
+}
+
+@-webkit-keyframes fadeinout {
+  0%,100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+@keyframes fadeinout {
+  0%,100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+#flutter_inappwebview-0
+{
+  background-color: #3e2723;
+  filter: hue-rotate(150deg) grayscale(85%);
+}
+
+#flutter_inappwebview-0-container
+{
+  background-color: #3e2723;
+}
+
+
+#flutter_inappwebview-1
+{
+  background-color: #3e2723;
+  min-width:140% !important;
+    min-height:150% !important;
+  filter: hue-rotate(150deg) grayscale(79%);
+  transform: scaleY(0.5) scaleX(0.75) translate(-18%, -4%);
+}
+
+#flutter_inappwebview-1-container
+{
+
+  background-color: #3e2723;
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+}
