@@ -98,7 +98,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                                         animationController!.forward();
                                       });
                                       Future.delayed(
-                                          const Duration(seconds: 1800), () {
+                                          const Duration(seconds: 300), () {
                                         controller.reload();
                                       });
                                       Future.delayed(const Duration(seconds: 5),
