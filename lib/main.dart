@@ -37,7 +37,6 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
   CurvedAnimation? animation;
 
   bool _first = true;
-
   bool _delay = true;
 
   InAppWebViewSettings settings = InAppWebViewSettings(
@@ -70,7 +69,6 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
         _delay = false;
       });
     });
-
   }
 
   @override
@@ -84,91 +82,96 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
           height: MediaQuery.of(context).size.height,
           child: Center(
               child: Transform.scale(
-                  scale: 0.8,
-                  child:  Image.asset("assets/info.png"
-                  )))),
-      secondChild:
-      !_delay ? Column(children: <Widget>[
-        Container(
-            color: Colors.brown.shade900,
-            height: MediaQuery.of(context).size.height / 2,
-            child: Column(children: <Widget>[
-              Transform.scale(
-                  scale: 1.2,
-                  child: Container(
-                      color: Colors.brown.shade900,
-                      height: 256,
-                      width: 256,
-                      child: FadeTransition(
+                  scale: 0.8, child: Image.asset("assets/info.png")))),
+      secondChild: !_delay
+          ? Column(children: <Widget>[
+              Container(
+                  color: Colors.brown.shade900,
+                  height: MediaQuery.of(context).size.height / 5 * 3,
+                  child: Column(children: <Widget>[
+                    Center(
+                        child: Transform.scale(
+                            scale: 2,
+                            child: Container(
+                                color: Colors.brown.shade900,
+                                height: 256,
+                                width: 256,
+                                child: FadeTransition(
+                                  opacity: animation!,
+                                  child: InAppWebView(
+                                    key: webViewKey,
+                                    initialUrlRequest: URLRequest(
+                                        url: WebUri(
+                                            "https://gadgets.buienradar.nl/gadget/zoommap/?lat=52.22277&lng=4.47992&overname=2&zoom=8&naam=2215el&size=2&voor=0")),
+                                    initialSettings: settings,
+                                    onWebViewCreated: (controller) {
+                                      webViewController = controller;
+                                    },
+                                    onConsoleMessage:
+                                        (controller, consoleMessage) {
+                                      print(consoleMessage);
+                                    },
+                                    onLoadStop:
+                                        (InAppWebViewController controller,
+                                            WebUri? url) {
+                                      Future.delayed(
+                                          const Duration(milliseconds: 50), () {
+                                        animationController!.forward();
+                                      });
+                                      Future.delayed(
+                                          const Duration(seconds: 1800), () {
+                                        controller.reload();
+                                      });
+                                      Future.delayed(const Duration(seconds: 5),
+                                          () {
+                                        setState(() {
+                                          _first = false;
+                                        });
+                                      });
+                                    },
+                                  ),
+                                )))),
+                    Expanded(child: Container())
+                  ])),
+              Container(
+                color: Colors.brown.shade900,
+                height: MediaQuery.of(context).size.height / 5 * 2,
+                child: Stack(
+                  children: [
+                    FadeTransition(
                         opacity: animation!,
-                        child: InAppWebView(
-                          key: webViewKey,
-                          initialUrlRequest: URLRequest(
-                              url: WebUri(
-                                  "https://gadgets.buienradar.nl/gadget/zoommap/?lat=52.22277&lng=4.47992&overname=2&zoom=8&naam=2215el&size=2&voor=0")),
-                          initialSettings: settings,
-                          onWebViewCreated: (controller) {
-                            webViewController = controller;
-                          },
-                          onConsoleMessage: (controller, consoleMessage) {
-                            print(consoleMessage);
-                          },
-                          onLoadStop:
-                              (InAppWebViewController controller, WebUri? url) {
-                            Future.delayed(const Duration(milliseconds: 50),
-                                () {
-                              animationController!.forward();
-                            });
-                            Future.delayed(const Duration(seconds: 1800), () {
-                              controller.reload();
-                            });
-                            Future.delayed(const Duration(seconds: 5), () {
-                              setState(() {
-                                _first = false;
+                        child: (InAppWebView(
+                            key: webViewKey2,
+                            initialUrlRequest: URLRequest(
+                                url: WebUri(
+                                    "https://www.ns.nl/reisinformatie/externe-schermen/treinen/vertrektijden?stationId=VH&columns=1&rows=4&header=Treinen&footer=&clock=false&headerLogo=false&footerLogo=false")),
+                            initialSettings: settings,
+                            onWebViewCreated: (controller) {
+                              webViewController2 = controller;
+                            },
+                            onConsoleMessage: (controller, consoleMessage) {
+                              print(consoleMessage);
+                            },
+                            onLoadStop: (InAppWebViewController controller,
+                                WebUri? url) {
+                              Future.delayed(const Duration(milliseconds: 50),
+                                  () {
+                                animationController!.forward();
                               });
-                            });
-                          },
-                        ),
-                      ))),
-              Expanded(child: Container())
-            ])),
-        Container(
-          color: Colors.brown.shade900,
-          height: MediaQuery.of(context).size.height / 2,
-          child: Stack(
-            children: [
-              FadeTransition(
-                  opacity: animation!,
-                  child: (InAppWebView(
-                      key: webViewKey2,
-                      initialUrlRequest: URLRequest(
-                          url: WebUri(
-                              "https://www.ns.nl/reisinformatie/externe-schermen/treinen/vertrektijden?stationId=VH&columns=1&rows=4&header=Treinen&footer=&clock=false&headerLogo=false&footerLogo=false")),
-                      initialSettings: settings,
-                      onWebViewCreated: (controller) {
-                        webViewController2 = controller;
-                      },
-                      onConsoleMessage: (controller, consoleMessage) {
-                        print(consoleMessage);
-                      },
-                      onLoadStop:
-                          (InAppWebViewController controller, WebUri? url) {
-                        Future.delayed(const Duration(milliseconds: 50), () {
-                          animationController!.forward();
-                        });
-                        Future.delayed(const Duration(seconds: 1800), () {
-                          controller.reload();
-                        });
-                        Future.delayed(const Duration(seconds: 5), () {
-                          setState(() {
-                            _first = false;
-                          });
-                        });
-                      }))),
-            ],
-          ),
-        ),
-      ]): Container(),
+                              Future.delayed(const Duration(seconds: 1800), () {
+                                controller.reload();
+                              });
+                              Future.delayed(const Duration(seconds: 5), () {
+                                setState(() {
+                                  _first = false;
+                                });
+                              });
+                            }))),
+                  ],
+                ),
+              ),
+            ])
+          :  Container(),
       crossFadeState:
           _first ? CrossFadeState.showFirst : CrossFadeState.showSecond,
     )));

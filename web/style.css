@@ -46,15 +46,14 @@ h2 {
 
 #flutter_inappwebview-0
 {
-  transform: translate(-5%, -5%);
   background-color: #3e2723;
   filter: hue-rotate(150deg) invert(100%) grayscale(80%) brightness(70%);
-  transform: translate(-32%, -2%);
 }
 
 #flutter_inappwebview-0-container
 {
   background-color: #3e2723;
+  transform: translate(-2%, 17%);
 }
 
 #flutter_inappwebview-1
@@ -63,12 +62,11 @@ h2 {
   min-width:140% !important;
   min-height:200% !important;
   filter: hue-rotate(140deg) grayscale(62%) invert(10%) brightness(72%);
-  transform: scaleY(0.7) scaleX(0.75) translate(-18%, -2%);
+  transform: scaleY(0.7) scaleX(0.75) translate(-18%, -19%);
 }
 
 #flutter_inappwebview-1-container
 {
-
   background-color: #3e2723;
 }
 
