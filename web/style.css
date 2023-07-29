@@ -1,76 +1,93 @@
-body {
-  background-color: #3e2723;
-  font-family: Arial, sans-serif;
+.elementToFadeInAndOut
+{
+	-webkit-animation:fadeinout 3s linear forwards;
+	animation:fadeinout 3s linear forwards;
+	height:600px;
+	left:50%;
+	margin:0;
+	margin-right:-50%;
+	object-fit:scale-down;
+	position:absolute;
+	top:50%;
+	transform:translate(-50%,-50%);
+	width:400px
 }
 
-h2 {
-    -webkit-animation: fadeinout 3s linear forwards;
-    animation: fadeinout 3s linear forwards;
-      margin: 0;
-      object-fit:scale-down;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      margin-bottom: -50%
-      margin-right: -50%;
-      transform: translate(-50%, -50%);
-      padding-top: 250px;
-      color: white;
-      text-size: 50px;
+body
+{
+	background-color:#3e2723;
+	font-family:Arial,sans-serif
 }
 
-
-.elementToFadeInAndOut {
-    -webkit-animation: fadeinout 3s linear forwards;
-    animation: fadeinout 3s linear forwards;
-      margin: 0;
-      width: 400px;
-      height: 600px;
-      object-fit:scale-down;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      margin-right: -50%;
-      transform: translate(-50%, -50%);
+h2
+{
+	-webkit-animation:fadeinout 3s linear forwards;
+	animation:fadeinout 3s linear forwards;
+	color:#fff;
+	left:50%;
+	margin:0;
+	margin-bottom:-50%;
+	margin-right:-50%;
+	object-fit:scale-down;
+	padding-top:250px;
+	position:absolute;
+	text-size:50px;
+	top:50%;
+	transform:translate(-50%,-50%)
 }
 
 @-webkit-keyframes fadeinout {
-  0%,100% { opacity: 0.7; }
-  50% { opacity: 1; }
+	0%,100%
+	{
+		opacity:.7
+	}
+
+	50%
+	{
+		opacity:1
+	}
 }
 
 @keyframes fadeinout {
-  0%,100% { opacity: 0; }
-  50% { opacity: 1; }
+	0%,100%
+	{
+		opacity:0
+	}
+
+	50%
+	{
+		opacity:1
+	}
 }
 
 #flutter_inappwebview-0
 {
-  background-color: #3e2723;
-  filter: hue-rotate(150deg) invert(100%) grayscale(80%) brightness(70%);
+	background-color:#3e2723;
+	filter:hue-rotate(150deg) invert(100%) grayscale(80%) brightness(70%)
 }
 
 #flutter_inappwebview-0-container
 {
-  background-color: #3e2723;
-  transform: translate(-2%, 17%);
+	background-color:#3e2723;
+	transform:translate(-2%,17%)
 }
 
 #flutter_inappwebview-1
 {
-  background-color: #3e2723;
-  min-width:140% !important;
-  min-height:200% !important;
-  filter: hue-rotate(140deg) grayscale(62%) invert(10%) brightness(72%);
-  transform: scaleY(0.7) scaleX(0.75) translate(-18%, -19%);
+	background-color:#3e2723;
+	filter:hue-rotate(140deg) grayscale(62%) invert(10%) brightness(72%);
+	min-height:200%!important;
+	min-width:140%!important;
+	transform:scaleY(0.7) scaleX(0.75) translate(-18%,-19%)
 }
 
 #flutter_inappwebview-1-container
 {
-  background-color: #3e2723;
+	background-color:#3e2723
 }
 
-::-webkit-scrollbar {
-    width: 0px;
-    height: 0px;
+::-webkit-scrollbar
+{
+	height:0;
+	width:0
 }
