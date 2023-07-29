@@ -36,6 +36,10 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
   AnimationController? animationController;
   CurvedAnimation? animation;
 
+  bool _first = true;
+
+  bool _delay = true;
+
   InAppWebViewSettings settings = InAppWebViewSettings(
       useShouldOverrideUrlLoading: true,
       disallowOverScroll: true,
@@ -55,13 +59,36 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
       parent: animationController!,
       curve: Curves.ease,
     );
+    Future.delayed(const Duration(seconds: 50), () {
+      setState(() {
+        _first = false;
+      });
+    });
+
+    Future.delayed(const Duration(seconds: 5), () {
+      setState(() {
+        _delay = false;
+      });
+    });
+
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-          child: Column(children: <Widget>[
+        body: SafeArea(
+            child: AnimatedCrossFade(
+      duration: const Duration(seconds: 1),
+      firstChild: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: Center(
+              child: Transform.scale(
+                  scale: 0.8,
+                  child:  Image.asset("assets/info.png"
+                  )))),
+      secondChild:
+      !_delay ? Column(children: <Widget>[
         Container(
             color: Colors.brown.shade900,
             height: MediaQuery.of(context).size.height / 2,
@@ -92,8 +119,13 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                                 () {
                               animationController!.forward();
                             });
-                            Future.delayed(const Duration(seconds: 1800), (){
+                            Future.delayed(const Duration(seconds: 1800), () {
                               controller.reload();
+                            });
+                            Future.delayed(const Duration(seconds: 5), () {
+                              setState(() {
+                                _first = false;
+                              });
                             });
                           },
                         ),
@@ -124,14 +156,21 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                         Future.delayed(const Duration(milliseconds: 50), () {
                           animationController!.forward();
                         });
-                        Future.delayed(const Duration(seconds: 1800), (){
+                        Future.delayed(const Duration(seconds: 1800), () {
                           controller.reload();
+                        });
+                        Future.delayed(const Duration(seconds: 5), () {
+                          setState(() {
+                            _first = false;
+                          });
                         });
                       }))),
             ],
           ),
         ),
-      ])),
-    );
+      ]): Container(),
+      crossFadeState:
+          _first ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+    )));
   }
 }
