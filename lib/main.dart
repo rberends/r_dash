@@ -13,13 +13,15 @@ Future main() async {
 
   runApp(MaterialApp(
     home: new MyApp(),
-    color: Colors.brown.shade900,
+    color: mainColor,
     theme: ThemeData(
-      scaffoldBackgroundColor: Colors.brown.shade900,
-      canvasColor: Colors.brown.shade900,
+      scaffoldBackgroundColor: mainColor,
+      canvasColor: mainColor,
     ),
   ));
 }
+
+final mainColor = Colors.brown.shade900;
 
 class MyApp extends StatefulWidget {
   @override
@@ -45,35 +47,12 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
       verticalScrollBarEnabled: false,
       horizontalScrollBarEnabled: false,
       ignoresViewportScaleLimits: true,
-      underPageBackgroundColor: Colors.brown.shade900,
+      underPageBackgroundColor: mainColor,
       transparentBackground: true);
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    animationController = AnimationController(
-        duration: const Duration(milliseconds: 1500), vsync: this);
-    animation = CurvedAnimation(
-      parent: animationController!,
-      curve: Curves.ease,
-    );
-    Future.delayed(const Duration(seconds: 50), () {
-      setState(() {
-        _first = false;
-      });
-    });
-
-    Future.delayed(const Duration(seconds: 5), () {
-      setState(() {
-        _delay = false;
-      });
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    var scaffold = Scaffold(
         body: SafeArea(
             child: AnimatedCrossFade(
       duration: const Duration(seconds: 1),
@@ -86,14 +65,14 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
       secondChild: !_delay
           ? Column(children: <Widget>[
               Container(
-                  color: Colors.brown.shade900,
+                  color: mainColor,
                   height: MediaQuery.of(context).size.height / 5 * 3,
                   child: Column(children: <Widget>[
                     Center(
                         child: Transform.scale(
                             scale: 2,
                             child: Container(
-                                color: Colors.brown.shade900,
+                                color: mainColor,
                                 height: 256,
                                 width: 256,
                                 child: FadeTransition(
@@ -134,7 +113,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                     Expanded(child: Container())
                   ])),
               Container(
-                color: Colors.brown.shade900,
+                color: mainColor,
                 height: MediaQuery.of(context).size.height / 5 * 2,
                 child: Stack(
                   children: [
@@ -171,9 +150,33 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                 ),
               ),
             ])
-          :  Container(),
+          : Container(),
       crossFadeState:
           _first ? CrossFadeState.showFirst : CrossFadeState.showSecond,
     )));
+    return scaffold;
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    animationController = AnimationController(
+        duration: const Duration(milliseconds: 1500), vsync: this);
+    animation = CurvedAnimation(
+      parent: animationController!,
+      curve: Curves.ease,
+    );
+    Future.delayed(const Duration(seconds: 50), () {
+      setState(() {
+        _first = false;
+      });
+    });
+
+    Future.delayed(const Duration(seconds: 5), () {
+      setState(() {
+        _delay = false;
+      });
+    });
   }
 }
