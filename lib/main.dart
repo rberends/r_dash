@@ -68,7 +68,6 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
             child: Column(children: <Widget>[
               Transform.scale(
                   scale: 1.2,
-                  origin: const Offset(420, -170),
                   child: Container(
                       color: Colors.brown.shade900,
                       height: 256,
