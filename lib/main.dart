@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:transparent_image/transparent_image.dart';
+import 'dart:developer' as developer;
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,8 +31,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
+  late Timer _everySecond;
+
   final GlobalKey webViewKey = GlobalKey();
   final GlobalKey webViewKey2 = GlobalKey();
+
+  var url = "";
 
   InAppWebViewController? webViewController;
   InAppWebViewController? webViewController2;
@@ -40,6 +46,9 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
 
   bool _first = true;
   bool _delay = true;
+
+  var buienRadarHeight = 0;
+  var buienRadarWidth = 0;
 
   InAppWebViewSettings settings = InAppWebViewSettings(
       useShouldOverrideUrlLoading: true,
@@ -52,6 +61,16 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    var radarHeight = (MediaQuery.of(context).size.height / 5 * 3);
+    var radarWidth = (MediaQuery.of(context).size.width);
+
+    buienRadarHeight = radarHeight.toInt();
+    buienRadarWidth = radarWidth.toInt();
+
+    url.isEmpty ? url =getNewBuienRadarUrl(buienRadarHeight, buienRadarWidth): url;
+    print(url);
+
+
     var scaffold = Scaffold(
         body: SafeArea(
             child: AnimatedCrossFade(
@@ -64,54 +83,28 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                   scale: 0.8, child: Image.asset("assets/info.png")))),
       secondChild: !_delay
           ? Column(children: <Widget>[
-              Container(
-                  color: mainColor,
-                  height: MediaQuery.of(context).size.height / 5 * 3,
-                  child: Column(children: <Widget>[
-                    Center(
-                        child: Transform.scale(
-                            scale: 2,
-                            child: Container(
-                                color: mainColor,
-                                height: 256,
-                                width: 256,
-                                child: FadeTransition(
-                                  opacity: animation!,
-                                  child: InAppWebView(
-                                    key: webViewKey,
-                                    initialUrlRequest: URLRequest(
-                                        url: WebUri(
-                                            "https://gadgets.buienradar.nl/gadget/zoommap/?lat=52.22277&lng=4.47992&overname=2&zoom=8&naam=2215el&size=2&voor=0")),
-                                    initialSettings: settings,
-                                    onWebViewCreated: (controller) {
-                                      webViewController = controller;
-                                    },
-                                    onConsoleMessage:
-                                        (controller, consoleMessage) {
-                                      print(consoleMessage);
-                                    },
-                                    onLoadStop:
-                                        (InAppWebViewController controller,
-                                            WebUri? url) {
-                                      Future.delayed(
-                                          const Duration(milliseconds: 50), () {
-                                        animationController!.forward();
-                                      });
-                                      Future.delayed(
-                                          const Duration(seconds: 300), () {
-                                        controller.reload();
-                                      });
-                                      Future.delayed(const Duration(seconds: 5),
-                                          () {
-                                        setState(() {
-                                          _first = false;
-                                        });
-                                      });
-                                    },
-                                  ),
-                                )))),
-                    Expanded(child: Container())
-                  ])),
+              SizedBox(
+                  width: radarWidth,
+                  height: radarHeight,
+                  child: ColorFiltered(
+                      colorFilter: ColorFilter.mode(mainColor, BlendMode.color),
+                      child: ColorFiltered(
+                          colorFilter:
+                              ColorFilter.mode(mainColor, BlendMode.screen),
+                          child: ColorFiltered(
+                              colorFilter: const ColorFilter.mode(
+                                  Colors.black54, BlendMode.overlay),
+                              child: ColorFiltered(
+                                colorFilter: const ColorFilter.mode(
+                                    Colors.grey, BlendMode.saturation),
+                                child: FadeInImage.assetNetwork(
+                                  placeholder: "assets/placeholder.jpeg",
+                                  image:
+                                    url,
+                                  fit: BoxFit.cover,
+                                  fadeInDuration: const Duration(milliseconds: 300),
+                                ),
+                              ))))),
               Container(
                 color: mainColor,
                 height: MediaQuery.of(context).size.height / 5 * 2,
@@ -167,16 +160,34 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
       parent: animationController!,
       curve: Curves.ease,
     );
-    Future.delayed(const Duration(seconds: 50), () {
+    Future.delayed(const Duration(seconds: 2), () {
       setState(() {
         _first = false;
       });
     });
 
-    Future.delayed(const Duration(seconds: 5), () {
+    Future.delayed(const Duration(seconds: 2), () {
       setState(() {
         _delay = false;
       });
+
+      // defines a timer
+      _everySecond = Timer.periodic(const Duration(seconds: 60), (Timer t) {
+        setState(() {
+          PaintingBinding.instance.imageCache.clear();
+          url = getNewBuienRadarUrl(buienRadarHeight, buienRadarWidth);
+        });
+      });
     });
   }
+
+  String getNewBuienRadarUrl(buienRadarHeight, buienRadarWidth) {
+    return "https://image.buienradar.nl/2.0/image/animation/RadarMapRainWebMercatorNL?"
+        "width=$buienRadarWidth"
+        "&height=$buienRadarHeight"
+        "&renderBackground=True"
+        "&renderBranding=True"
+        "&renderText=true";
+  }
+
 }

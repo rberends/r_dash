@@ -38,6 +38,7 @@ dependencies:
   url_launcher: ^6.1.12
   flutterpi_tool: ^0.0.5
   http: ^0.13.5
+  transparent_image: ^2.0.1
 
 
 
@@ -67,6 +68,9 @@ flutter:
 
   assets:
     - assets/info.png
+    - assets/placeholder.gif
+    - assets/placeholder.jpeg
+
 
   # To add assets to your application, add an assets section, like this:
   # assets:
