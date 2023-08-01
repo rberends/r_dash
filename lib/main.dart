@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart' as inapp;
 import 'package:http/http.dart' as http;
 import 'package:web_page_poc/departure_view.dart';
@@ -25,7 +26,7 @@ Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   HttpOverrides.global = new MyHttpOverrides();
-
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
     await inapp.InAppWebViewController.setWebContentsDebuggingEnabled(true);
   }
