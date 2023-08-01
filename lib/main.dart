@@ -1,16 +1,32 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:developer' as developer;
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:transparent_image/transparent_image.dart';
-import 'dart:developer' as developer;
+import 'package:flutter_inappwebview/flutter_inappwebview.dart' as inapp;
+import 'package:http/http.dart' as http;
+import 'package:web_page_poc/departure_view.dart';
+import 'package:web_page_poc/podo/departure.dart';
+import 'package:web_page_poc/podo/ns_response.dart';
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  HttpOverrides.global = new MyHttpOverrides();
+
   if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
-    await InAppWebViewController.setWebContentsDebuggingEnabled(true);
+    await inapp.InAppWebViewController.setWebContentsDebuggingEnabled(true);
   }
 
   runApp(MaterialApp(
@@ -31,15 +47,16 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
-  late Timer _everySecond;
+  late Timer _updateTimer;
 
   final GlobalKey webViewKey = GlobalKey();
   final GlobalKey webViewKey2 = GlobalKey();
 
   var url = "";
 
-  InAppWebViewController? webViewController;
-  InAppWebViewController? webViewController2;
+
+  inapp.InAppWebViewController? webViewController;
+  inapp.InAppWebViewController? webViewController2;
 
   AnimationController? animationController;
   CurvedAnimation? animation;
@@ -50,7 +67,9 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
   var buienRadarHeight = 0;
   var buienRadarWidth = 0;
 
-  InAppWebViewSettings settings = InAppWebViewSettings(
+  var departures = <Departure>[];
+
+  inapp.InAppWebViewSettings settings = inapp.InAppWebViewSettings(
       useShouldOverrideUrlLoading: true,
       disallowOverScroll: true,
       verticalScrollBarEnabled: false,
@@ -67,9 +86,9 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
     buienRadarHeight = radarHeight.toInt();
     buienRadarWidth = radarWidth.toInt();
 
-    url.isEmpty ? url =getNewBuienRadarUrl(buienRadarHeight, buienRadarWidth): url;
-    print(url);
-
+    url.isEmpty
+        ? url = getNewBuienRadarUrl(buienRadarHeight, buienRadarWidth)
+        : url;
 
     var scaffold = Scaffold(
         body: SafeArea(
@@ -87,59 +106,32 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                   width: radarWidth,
                   height: radarHeight,
                   child: ColorFiltered(
-                      colorFilter: ColorFilter.mode(mainColor, BlendMode.color),
-                      child: ColorFiltered(
                           colorFilter:
-                              ColorFilter.mode(mainColor, BlendMode.screen),
+                              ColorFilter.mode(mainColor, BlendMode.color),
                           child: ColorFiltered(
-                              colorFilter: const ColorFilter.mode(
-                                  Colors.black54, BlendMode.overlay),
+                              colorFilter:
+                                  ColorFilter.mode(mainColor, BlendMode.screen),
                               child: ColorFiltered(
-                                colorFilter: const ColorFilter.mode(
-                                    Colors.grey, BlendMode.saturation),
-                                child: FadeInImage.assetNetwork(
-                                  placeholder: "assets/placeholder.jpeg",
-                                  image:
-                                    url,
-                                  fit: BoxFit.cover,
-                                  fadeInDuration: const Duration(milliseconds: 300),
-                                ),
-                              ))))),
+                                  colorFilter: const ColorFilter.mode(
+                                      Colors.black54, BlendMode.overlay),
+                                  child: ColorFiltered(
+                                    colorFilter: const ColorFilter.mode(
+                                        Colors.grey, BlendMode.saturation),
+                                    child: Image.network(
+                                      url,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ))))),
               Container(
-                color: mainColor,
                 height: MediaQuery.of(context).size.height / 5 * 2,
-                child: Stack(
-                  children: [
-                    FadeTransition(
-                        opacity: animation!,
-                        child: (InAppWebView(
-                            key: webViewKey2,
-                            initialUrlRequest: URLRequest(
-                                url: WebUri(
-                                    "https://www.ns.nl/reisinformatie/externe-schermen/treinen/vertrektijden?stationId=VH&columns=1&rows=4&header=Treinen&footer=&clock=false&headerLogo=false&footerLogo=false")),
-                            initialSettings: settings,
-                            onWebViewCreated: (controller) {
-                              webViewController2 = controller;
-                            },
-                            onConsoleMessage: (controller, consoleMessage) {
-                              print(consoleMessage);
-                            },
-                            onLoadStop: (InAppWebViewController controller,
-                                WebUri? url) {
-                              Future.delayed(const Duration(milliseconds: 50),
-                                  () {
-                                animationController!.forward();
-                              });
-                              Future.delayed(const Duration(seconds: 1800), () {
-                                controller.reload();
-                              });
-                              Future.delayed(const Duration(seconds: 5), () {
-                                setState(() {
-                                  _first = false;
-                                });
-                              });
-                            }))),
-                  ],
+                color: mainColor,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.all(0),
+                  itemCount: departures.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return DepartureWidget(departure:departures[index], light:index.isEven);
+                  },
                 ),
               ),
             ])
@@ -154,6 +146,9 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    var string = getTravelInfo();
+
     animationController = AnimationController(
         duration: const Duration(milliseconds: 1500), vsync: this);
     animation = CurvedAnimation(
@@ -172,12 +167,18 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
       });
 
       // defines a timer
-      _everySecond = Timer.periodic(const Duration(seconds: 60), (Timer t) {
+      _updateTimer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
         setState(() {
           PaintingBinding.instance.imageCache.clear();
+          final NetworkImage provider = NetworkImage(url);
+          provider.evict().then<void>((bool success) {
+            if (success) debugPrint('removed image!');
+          });
           url = getNewBuienRadarUrl(buienRadarHeight, buienRadarWidth);
+          print(url);
+          getTravelInfo();
         });
-      });
+      }, );
     });
   }
 
@@ -190,4 +191,21 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
         "&renderText=true";
   }
 
+  Future<String> getTravelInfo() async {
+    var headers = <String, String>{
+      "Cache-Control": "no-cache",
+      
+    };
+    final response = await http.get(
+        Uri.parse(
+            'https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/departures?station=VH&maxJourneys=4'),
+        headers: headers);
+    final body = json.decode(response.body);
+    setState(() {
+      _first = false;
+      departures = NSResponse.fromJson(body).payload!.departures!;
+      print("ns state updated");
+    });
+    return response.body;
+  }
 }
