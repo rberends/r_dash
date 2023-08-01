@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:web_page_poc/departure_view.dart';
 import 'package:web_page_poc/podo/departure.dart';
 import 'package:web_page_poc/podo/ns_response.dart';
+import 'package:flutterpi_tool/flutterpi_tool.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -125,7 +126,21 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
               Container(
                 height: MediaQuery.of(context).size.height / 5 * 2,
                 color: mainColor,
-                child: ListView.builder(
+                child:
+                Column(
+                  children:[
+                    ColorFiltered(
+                        colorFilter: ColorFilter.mode(mainColor, BlendMode.color),
+                        child: Container(height:  MediaQuery.of(context).size.height / 5 * 2 / 5, color: mainColor, padding: const EdgeInsets.all(8),
+                            alignment: Alignment.centerLeft,
+                            child: const Text("Treinen",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontSize: 36,
+                            ))),
+                    ),
+                ListView.builder(
                   shrinkWrap: true,
                   padding: const EdgeInsets.all(0),
                   itemCount: departures.length,
@@ -133,7 +148,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                     return DepartureWidget(departure:departures[index], light:index.isEven);
                   },
                 ),
-              ),
+              ])),
             ])
           : Container(),
       crossFadeState:
@@ -194,7 +209,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
   Future<String> getTravelInfo() async {
     var headers = <String, String>{
       "Cache-Control": "no-cache",
-      
+      "Ocp-Apim-Subscription-Key": "294f9f36a196423c96e3c5b77b144aeb"
     };
     final response = await http.get(
         Uri.parse(
