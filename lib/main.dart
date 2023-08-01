@@ -26,7 +26,7 @@ Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   HttpOverrides.global = new MyHttpOverrides();
-
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
     await inapp.InAppWebViewController.setWebContentsDebuggingEnabled(true);
   }
@@ -82,7 +82,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
 
     var radarHeight = (MediaQuery.of(context).size.height / 5 * 3);
     var radarWidth = (MediaQuery.of(context).size.width);
