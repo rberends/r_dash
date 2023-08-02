@@ -62,7 +62,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    var radarHeight = (MediaQuery.of(context).size.height / 5 * 3.1);
+    var radarHeight = (MediaQuery.of(context).size.height / 5 * 3.5);
     var radarWidth = (MediaQuery.of(context).size.width);
 
     buienRadarHeight = radarHeight.toInt();
@@ -86,8 +86,9 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
           ? Stack(
           alignment: AlignmentDirectional.topStart,
           children:[
-
-              SizedBox(
+      Transform.scale(
+        scaleX: 1.3,
+        child: SizedBox(
                   width: radarWidth,
                   height: radarHeight,
                   child: ColorFiltered(
@@ -108,7 +109,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                                   fit: BoxFit.cover,
                                   key: UniqueKey(),
                                 ),
-                              ))))),
+                              ))))),),
             Column(children: <Widget>[
               Expanded(child: Container()),
               SizedBox(
@@ -148,10 +149,13 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                   ])),
             ]),
             Container(
-              margin:  const EdgeInsets.all(6),
+              margin:  const EdgeInsets.only(left: 12),
                 width: radarWidth/2.5,
                 height: radarHeight/2.5,
                 child:
+                    Transform.scale(
+                      scaleY: 0.95,
+                      child:
                 AnalogClock.dark(
                   hourNumberColor:mainColor.shade100,
                   hourHandColor : mainColor.shade100,
@@ -165,7 +169,7 @@ markingColor: mainColor.shade900,
                   minuteHandLengthFactor:0.8,
                   secondHandLengthFactor:0.4,
                   hourNumberSizeFactor:1.1,
-                  dialBorderColor: mainColor.shade100,)),
+                  dialBorderColor: mainColor.shade100,))),
           ]
       )
           : Container(),
