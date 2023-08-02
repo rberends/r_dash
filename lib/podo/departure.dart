@@ -36,7 +36,7 @@ class Departure {
   Departure.fromJson(Map<String, dynamic> json) {
     direction = json['direction'];
     name = json['name'];
-    plannedDateTime =  DateTime.parse(json['plannedDateTime']);
+    plannedDateTime = DateTime.parse(json['plannedDateTime']);
     plannedTimeZoneOffset = json['plannedTimeZoneOffset'];
     actualDateTime = DateTime.parse(json['actualDateTime']);
     actualTimeZoneOffset = json['actualTimeZoneOffset'];

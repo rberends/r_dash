@@ -1,18 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer' as developer;
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart' as inapp;
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:web_page_poc/departure_view.dart';
 import 'package:web_page_poc/podo/departure.dart';
 import 'package:web_page_poc/podo/ns_response.dart';
-import 'package:flutterpi_tool/flutterpi_tool.dart';
+import 'package:web_page_poc/r_dash_globals.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -28,21 +25,16 @@ Future main() async {
 
   HttpOverrides.global = new MyHttpOverrides();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
-    await inapp.InAppWebViewController.setWebContentsDebuggingEnabled(true);
-  }
 
   runApp(MaterialApp(
     home: new MyApp(),
-    color: mainColor,
+    color: mainColor.shade900,
     theme: ThemeData(
-      scaffoldBackgroundColor: mainColor,
-      canvasColor: mainColor,
+      scaffoldBackgroundColor: mainColor.shade900,
+      canvasColor: mainColor.shade900,
     ),
   ));
 }
-
-final mainColor = Colors.brown.shade900;
 
 class MyApp extends StatefulWidget {
   @override
@@ -52,15 +44,9 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
   late Timer _updateNsTimer, _updateRadarTimer;
 
-  final GlobalKey webViewKey = GlobalKey();
-  final GlobalKey webViewKey2 = GlobalKey();
-
   var url = "";
 
   var _timeString = "";
-
-  inapp.InAppWebViewController? webViewController;
-  inapp.InAppWebViewController? webViewController2;
 
   AnimationController? animationController;
   CurvedAnimation? animation;
@@ -73,19 +59,8 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
 
   var departures = <Departure>[];
 
-  inapp.InAppWebViewSettings settings = inapp.InAppWebViewSettings(
-      useShouldOverrideUrlLoading: true,
-      disallowOverScroll: true,
-      verticalScrollBarEnabled: false,
-      horizontalScrollBarEnabled: false,
-      ignoresViewportScaleLimits: true,
-      underPageBackgroundColor: mainColor,
-      transparentBackground: true);
-
   @override
   Widget build(BuildContext context) {
-
-
     var radarHeight = (MediaQuery.of(context).size.height / 5 * 3);
     var radarWidth = (MediaQuery.of(context).size.width);
 
@@ -112,62 +87,72 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                   width: radarWidth,
                   height: radarHeight,
                   child: ColorFiltered(
-                          colorFilter:
-                              ColorFilter.mode(mainColor, BlendMode.color),
+                      colorFilter:
+                          ColorFilter.mode(mainColor.shade900, BlendMode.color),
+                      child: ColorFiltered(
+                          colorFilter: ColorFilter.mode(
+                              mainColor.shade900, BlendMode.screen),
                           child: ColorFiltered(
-                              colorFilter:
-                                  ColorFilter.mode(mainColor, BlendMode.screen),
+                              colorFilter: const ColorFilter.mode(
+                                  Colors.black54, BlendMode.overlay),
                               child: ColorFiltered(
-                                  colorFilter: const ColorFilter.mode(
-                                      Colors.black54, BlendMode.overlay),
-                                  child: ColorFiltered(
-                                    colorFilter: const ColorFilter.mode(
-                                        Colors.grey, BlendMode.saturation),
-                                    child: FadeInImage.assetNetwork(
-                                      placeholder: 'assets/placeholder.jpeg',
-                                      image:url,
-                                      fit: BoxFit.cover,
-                                      key: UniqueKey(),
-                                    ),
-                                  ))))),
+                                colorFilter: const ColorFilter.mode(
+                                    Colors.grey, BlendMode.saturation),
+                                child: FadeInImage.assetNetwork(
+                                  placeholder: 'assets/placeholder.jpeg',
+                                  image: url,
+                                  fit: BoxFit.cover,
+                                  key: UniqueKey(),
+                                ),
+                              ))))),
               Container(
-                height: MediaQuery.of(context).size.height / 5 * 2,
-                color: mainColor,
-                child:
-                Column(
-                  children:[
+                  height: MediaQuery.of(context).size.height / 5 * 2,
+                  color: mainColor.shade900,
+                  child: Column(children: [
                     ColorFiltered(
-                        colorFilter: ColorFilter.mode(mainColor, BlendMode.color),
-                        child:
-                        Row(
-                          children: [
-                        Container(height:  MediaQuery.of(context).size.height / 5 * 2 / 5, color: mainColor, padding: const EdgeInsets.all(8),
-                            alignment: Alignment.centerLeft,
-                            child: const Text("Treinen",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              fontSize: 34,
-                            ))),
-                            Expanded(child: Container()),
-                            Container(height:  MediaQuery.of(context).size.height / 5 * 2 / 5, color: mainColor, padding: const EdgeInsets.all(16),
-                                alignment: Alignment.centerRight,
-                                child: Text(_timeString,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                      fontSize: 34,
-                                    )))
+                        colorFilter: ColorFilter.mode(
+                            mainColor.shade900, BlendMode.color),
+                        child: Row(children: [
+                          Container(
+                              height: MediaQuery.of(context).size.height /
+                                  5 *
+                                  2 /
+                                  5,
+                              color: mainColor.shade900,
+                              padding: const EdgeInsets.all(8),
+                              alignment: Alignment.centerLeft,
+                              child: const Text("Treinen",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    fontSize: 34,
+                                  ))),
+                          Expanded(child: Container()),
+                          Container(
+                              height: MediaQuery.of(context).size.height /
+                                  5 *
+                                  2 /
+                                  5,
+                              color: mainColor.shade900,
+                              padding: const EdgeInsets.all(16),
+                              alignment: Alignment.centerRight,
+                              child: Text(_timeString,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    fontSize: 34,
+                                  )))
                         ])),
-                ListView.builder(
-                  shrinkWrap: true,
-                  padding: const EdgeInsets.all(0),
-                  itemCount: departures.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return DepartureWidget(departure:departures[index], light:index.isEven);
-                  },
-                ),
-              ])),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.all(0),
+                      itemCount: departures.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return DepartureWidget(
+                            departure: departures[index], light: index.isEven);
+                      },
+                    ),
+                  ])),
             ])
           : Container(),
       crossFadeState:
@@ -183,7 +168,6 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
 
     var string = getTravelInfo();
     _timeString = _formatTime(DateTime.now());
-
 
     Timer.periodic(const Duration(seconds: 5), (Timer t) => _getTimeString());
 
@@ -206,21 +190,27 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
     });
 
     // defines a timer
-    _updateRadarTimer = Timer.periodic(const Duration(seconds: 500), (Timer t) {
-      setState(() {
-        PaintingBinding.instance.imageCache.clear();
-        imageCache.clear();
-        imageCache.clearLiveImages();
-        url = getNewBuienRadarUrl(buienRadarHeight, buienRadarWidth);
-      });
-    }, );
+    _updateRadarTimer = Timer.periodic(
+      const Duration(seconds: 500),
+      (Timer t) {
+        setState(() {
+          PaintingBinding.instance.imageCache.clear();
+          imageCache.clear();
+          imageCache.clearLiveImages();
+          url = getNewBuienRadarUrl(buienRadarHeight, buienRadarWidth);
+        });
+      },
+    );
 
     // defines a timer
-    _updateNsTimer = Timer.periodic(const Duration(seconds: 30), (Timer t) {
-      setState(() {
-        getTravelInfo();
-      });
-    }, );
+    _updateNsTimer = Timer.periodic(
+      const Duration(seconds: 30),
+      (Timer t) {
+        setState(() {
+          getTravelInfo();
+        });
+      },
+    );
   }
 
   void _getTimeString() {

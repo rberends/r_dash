@@ -9,12 +9,12 @@ class Product {
 
   Product(
       {this.number,
-        this.categoryCode,
-        this.shortCategoryName,
-        this.longCategoryName,
-        this.operatorCode,
-        this.operatorName,
-        this.type});
+      this.categoryCode,
+      this.shortCategoryName,
+      this.longCategoryName,
+      this.operatorCode,
+      this.operatorName,
+      this.type});
 
   Product.fromJson(Map<String, dynamic> json) {
     number = json['number'];

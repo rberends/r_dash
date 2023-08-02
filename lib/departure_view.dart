@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:web_page_poc/podo/departure.dart';
+import 'package:web_page_poc/r_dash_globals.dart';
 
 class DepartureWidget extends StatefulWidget {
   DepartureWidget({super.key, required this.departure, this.light = false});
@@ -50,7 +51,7 @@ class _DepartureWidgetState extends State<DepartureWidget> {
       return "nu";
     }
     if (minutes < 0) {
-      return "${actualDatetime.difference(DateTime.now())!.inMinutes} minuten geleden";
+      return "vertrokken";
     }
     if (minutes > 0) {}
     return "in ${actualDatetime.difference(DateTime.now())!.inMinutes} minuten";
@@ -66,22 +67,22 @@ class _DepartureWidgetState extends State<DepartureWidget> {
   @override
   Widget build(BuildContext context) {
     return ColorFiltered(
-        colorFilter: ColorFilter.mode(Colors.brown.shade900, BlendMode.color),
+        colorFilter: ColorFilter.mode(mainColor.shade900, BlendMode.color),
         child: Container(
             padding: EdgeInsets.all(10),
-            color: widget.light ? Colors.brown.shade400 : Colors.brown.shade900,
+            color: widget.light ? mainColor.shade400 : mainColor.shade900,
             height: MediaQuery.of(context).size.height / 5 * 2 / 5,
             child: Row(
               children: [
-                Expanded(child:
-                Container(
-                    padding: const EdgeInsets.all(2),
-                    child: Text(widget.departure.direction!,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          fontSize: 16,
-                        )))),
+                Expanded(
+                    child: Container(
+                        padding: const EdgeInsets.all(2),
+                        child: Text(widget.departure.direction!,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontSize: 16,
+                            )))),
                 Container(
                     padding: const EdgeInsets.all(14),
                     alignment: Alignment.centerLeft,
@@ -96,11 +97,10 @@ class _DepartureWidgetState extends State<DepartureWidget> {
                         style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
-                            fontSize: 12)))
-                ,
+                            fontSize: 12))),
                 Container(
                     padding: const EdgeInsets.all(8),
-                    child: Text("Sp "+widget.departure!.actualTrack!,
+                    child: Text("Sp " + widget.departure!.actualTrack!,
                         style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
