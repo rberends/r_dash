@@ -83,7 +83,6 @@ class _DepartureWidgetState extends State<DepartureWidget> {
                           fontSize: 16,
                         )))),
                 Container(
-                    width: MediaQuery.of(context).size.width / 4,
                     padding: const EdgeInsets.all(8),
                     child: Text(departureString,
                         style: const TextStyle(
