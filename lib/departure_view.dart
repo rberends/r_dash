@@ -80,7 +80,7 @@ class _DepartureWidgetState extends State<DepartureWidget> {
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
-                          fontSize: 24,
+                          fontSize: 18,
                         ))),
                 Container(
                     width: MediaQuery.of(context).size.width / 3,
@@ -89,7 +89,7 @@ class _DepartureWidgetState extends State<DepartureWidget> {
                         style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
-                            fontSize: 24))),
+                            fontSize: 18))),
                 Container(
                     width: MediaQuery.of(context).size.width / 4,
                     padding: const EdgeInsets.all(2),
@@ -97,7 +97,7 @@ class _DepartureWidgetState extends State<DepartureWidget> {
                         style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
-                            fontSize: 24)))
+                            fontSize: 18)))
               ],
             )));
   }
