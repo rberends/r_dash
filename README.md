@@ -1,5 +1,5 @@
 # r_dash
-An info dashboard Flutter app, meant to be hosted on a specific display tied to a Raspberry Zero 2W.
+An info dashboard Flutter app, meant to be hosted on a specific display tied to a Raspberry (Zero 2W). It displays the Dutch Rainfal radar and real time train schedule for a specific station of your choosing.
 
 # Dependencies
 
