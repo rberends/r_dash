@@ -73,27 +73,34 @@ class _DepartureWidgetState extends State<DepartureWidget> {
             height: MediaQuery.of(context).size.height / 5 * 2 / 5,
             child: Row(
               children: [
+                Expanded(child:
                 Container(
-                    width: MediaQuery.of(context).size.width / 3,
                     padding: const EdgeInsets.all(2),
                     child: Text(widget.departure.direction!,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
-                          fontSize: 18,
-                        ))),
+                          fontSize: 20,
+                        )))),
                 Container(
-                    width: MediaQuery.of(context).size.width / 3,
-                    padding: const EdgeInsets.all(2),
+                    width: MediaQuery.of(context).size.width / 4,
+                    padding: const EdgeInsets.all(8),
                     child: Text(departureString,
                         style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                             fontSize: 18))),
                 Container(
-                    width: MediaQuery.of(context).size.width / 4,
-                    padding: const EdgeInsets.all(2),
+                    padding: const EdgeInsets.all(8),
                     child: Text(widget.departure.product!.longCategoryName!,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 18)))
+                ,
+                Container(
+                    padding: const EdgeInsets.all(8),
+                    child: Text("Sp "+widget.departure!.actualTrack!,
                         style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.white,

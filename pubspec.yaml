@@ -39,6 +39,7 @@ dependencies:
   flutterpi_tool: ^0.0.5
   http: ^0.13.5
   transparent_image: ^2.0.1
+  intl: ^0.18.0
 
 
 

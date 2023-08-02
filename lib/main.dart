@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart' as inapp;
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:web_page_poc/departure_view.dart';
 import 'package:web_page_poc/podo/departure.dart';
 import 'package:web_page_poc/podo/ns_response.dart';
@@ -49,13 +50,14 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
-  late Timer _updateTimer;
+  late Timer _updateNsTimer, _updateRadarTimer;
 
   final GlobalKey webViewKey = GlobalKey();
   final GlobalKey webViewKey2 = GlobalKey();
 
   var url = "";
 
+  var _timeString = "";
 
   inapp.InAppWebViewController? webViewController;
   inapp.InAppWebViewController? webViewController2;
@@ -121,9 +123,11 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                                   child: ColorFiltered(
                                     colorFilter: const ColorFilter.mode(
                                         Colors.grey, BlendMode.saturation),
-                                    child: Image.network(
-                                      url,
+                                    child: FadeInImage.assetNetwork(
+                                      placeholder: 'assets/placeholder.jpeg',
+                                      image:url,
                                       fit: BoxFit.cover,
+                                      key: UniqueKey(),
                                     ),
                                   ))))),
               Container(
@@ -134,7 +138,10 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                   children:[
                     ColorFiltered(
                         colorFilter: ColorFilter.mode(mainColor, BlendMode.color),
-                        child: Container(height:  MediaQuery.of(context).size.height / 5 * 2 / 5, color: mainColor, padding: const EdgeInsets.all(8),
+                        child:
+                        Row(
+                          children: [
+                        Container(height:  MediaQuery.of(context).size.height / 5 * 2 / 5, color: mainColor, padding: const EdgeInsets.all(8),
                             alignment: Alignment.centerLeft,
                             child: const Text("Treinen",
                             style: TextStyle(
@@ -142,7 +149,16 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                               color: Colors.white,
                               fontSize: 36,
                             ))),
-                    ),
+                            Expanded(child: Container()),
+                            Container(height:  MediaQuery.of(context).size.height / 5 * 2 / 5, color: mainColor, padding: const EdgeInsets.all(16),
+                                alignment: Alignment.centerRight,
+                                child: Text(_timeString,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      fontSize: 36,
+                                    )))
+                        ])),
                 ListView.builder(
                   shrinkWrap: true,
                   padding: const EdgeInsets.all(0),
@@ -166,9 +182,13 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
     super.initState();
 
     var string = getTravelInfo();
+    _timeString = _formatTime(DateTime.now());
+
+
+    Timer.periodic(const Duration(seconds: 5), (Timer t) => _getTimeString());
 
     animationController = AnimationController(
-        duration: const Duration(milliseconds: 1500), vsync: this);
+        duration: const Duration(milliseconds: 2500), vsync: this);
     animation = CurvedAnimation(
       parent: animationController!,
       curve: Curves.ease,
@@ -183,24 +203,41 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
       setState(() {
         _delay = false;
       });
+    });
 
-      // defines a timer
-      _updateTimer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
-        setState(() {
-          PaintingBinding.instance.imageCache.clear();
-          final NetworkImage provider = NetworkImage(url);
-          provider.evict().then<void>((bool success) {
-            if (success) debugPrint('removed image!');
-          });
-          url = getNewBuienRadarUrl(buienRadarHeight, buienRadarWidth);
-          print(url);
-          getTravelInfo();
-        });
-      }, );
+    // defines a timer
+    _updateRadarTimer = Timer.periodic(const Duration(seconds: 500), (Timer t) {
+      setState(() {
+        PaintingBinding.instance.imageCache.clear();
+        imageCache.clear();
+        imageCache.clearLiveImages();
+        url = getNewBuienRadarUrl(buienRadarHeight, buienRadarWidth);
+      });
+    }, );
+
+    // defines a timer
+    _updateNsTimer = Timer.periodic(const Duration(seconds: 30), (Timer t) {
+      setState(() {
+        getTravelInfo();
+      });
+    }, );
+  }
+
+  void _getTimeString() {
+    final DateTime now = DateTime.now();
+    final String formattedTime = _formatTime(now);
+
+    setState(() {
+      _timeString = formattedTime;
     });
   }
 
+  String _formatTime(DateTime dateTime) {
+    return DateFormat('hh:mm').format(dateTime);
+  }
+
   String getNewBuienRadarUrl(buienRadarHeight, buienRadarWidth) {
+    print("new buienradar url");
     return "https://image.buienradar.nl/2.0/image/animation/RadarMapRainWebMercatorNL?"
         "width=$buienRadarWidth"
         "&height=$buienRadarHeight"
