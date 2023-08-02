@@ -62,8 +62,11 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    var displayWidth = MediaQuery.of(context).size.width;
+
+
     var radarHeight = (MediaQuery.of(context).size.height / 5 * 3.5);
-    var radarWidth = (MediaQuery.of(context).size.width);
+    var radarWidth = displayWidth*1.4;
 
     buienRadarHeight = radarHeight.toInt();
     buienRadarWidth = radarWidth.toInt();
@@ -86,9 +89,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
           ? Stack(
           alignment: AlignmentDirectional.topStart,
           children:[
-      Transform.scale(
-        scaleX: 1.3,
-        child: SizedBox(
+ SizedBox(
                   width: radarWidth,
                   height: radarHeight,
                   child: ColorFiltered(
@@ -109,7 +110,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                                   fit: BoxFit.cover,
                                   key: UniqueKey(),
                                 ),
-                              ))))),),
+                              ))))),
             Column(children: <Widget>[
               Expanded(child: Container()),
               SizedBox(
@@ -134,8 +135,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                                     color: Colors.white,
                                     fontSize: 34,
                                   ))),
-
-
+            Expanded(child: Container()),
                         ])),
                     ListView.builder(
                       shrinkWrap: true,
@@ -150,7 +150,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
             ]),
             Container(
               margin:  const EdgeInsets.only(left: 12),
-                width: radarWidth/2.5,
+                width: displayWidth/2.5,
                 height: radarHeight/2.5,
                 child:
                     Transform.scale(
