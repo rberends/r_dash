@@ -97,7 +97,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
     var scaffold = Scaffold(
         body: SafeArea(
             child: AnimatedCrossFade(
-      duration: const Duration(seconds: 1),
+      duration: const Duration(seconds: 3),
       firstChild: SizedBox(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
