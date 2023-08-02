@@ -84,6 +84,7 @@ class _DepartureWidgetState extends State<DepartureWidget> {
                         )))),
                 Container(
                     padding: const EdgeInsets.all(14),
+                    alignment: Alignment.centerLeft,
                     child: Text(departureString,
                         style: const TextStyle(
                             fontWeight: FontWeight.bold,
