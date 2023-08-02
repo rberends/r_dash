@@ -147,7 +147,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
-                              fontSize: 36,
+                              fontSize: 34,
                             ))),
                             Expanded(child: Container()),
                             Container(height:  MediaQuery.of(context).size.height / 5 * 2 / 5, color: mainColor, padding: const EdgeInsets.all(16),
@@ -156,7 +156,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,
-                                      fontSize: 36,
+                                      fontSize: 34,
                                     )))
                         ])),
                 ListView.builder(
