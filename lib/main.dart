@@ -154,7 +154,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                 height: radarHeight/2.5,
                 child:
                     Transform.scale(
-                      scaleY: 0.95,
+                      scaleY: 0.92,
                       child:
                 AnalogClock.dark(
                   hourNumberColor:mainColor.shade100,
