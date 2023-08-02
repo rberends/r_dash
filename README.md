@@ -5,4 +5,8 @@ An info dashboard Flutter app, meant to be hosted on a specific display tied to 
 
 - Flutter
 - Flutter-pi
-- A Raspberry in Kiosk mode with the Lite OS.
+- A Display
+- A Raspberry in Kiosk mode with the Lite OS. I use the Zero 2w myself.
+
+## Notes
+- r_dash works natively only. flutter web is unable to work due to [CORS errors](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/Errors).
