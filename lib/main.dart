@@ -10,6 +10,7 @@ import 'package:web_page_poc/departure_view.dart';
 import 'package:web_page_poc/podo/departure.dart';
 import 'package:web_page_poc/podo/ns_response.dart';
 import 'package:web_page_poc/r_dash_globals.dart';
+import 'package:flutter_analog_clock/flutter_analog_clock.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -82,7 +83,10 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
               child: Transform.scale(
                   scale: 0.8, child: Image.asset("assets/info.png")))),
       secondChild: !_delay
-          ? Column(children: <Widget>[
+          ? Stack(
+          alignment: AlignmentDirectional.center,
+          children:[
+          Column(children: <Widget>[
               SizedBox(
                   width: radarWidth,
                   height: radarHeight,
@@ -128,20 +132,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                                     fontSize: 34,
                                   ))),
                           Expanded(child: Container()),
-                          Container(
-                              height: MediaQuery.of(context).size.height /
-                                  5 *
-                                  2 /
-                                  5,
-                              color: mainColor.shade900,
-                              padding: const EdgeInsets.all(16),
-                              alignment: Alignment.centerRight,
-                              child: Text(_timeString,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                    fontSize: 34,
-                                  )))
+
                         ])),
                     ListView.builder(
                       shrinkWrap: true,
@@ -153,7 +144,30 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                       },
                     ),
                   ])),
-            ])
+            ]),
+            Container(
+                margin: EdgeInsets.only(top: radarHeight/5.5),
+            child:
+            SizedBox(
+                width: radarWidth/2.5,
+                height: radarHeight/2.5,
+                child:
+                AnalogClock.dark(
+                  hourNumberColor: mainColor.shade900,
+                  hourHandColor : mainColor.shade900,
+                  minuteHandColor : mainColor.shade900,
+                  secondHandColor : mainColor.shade900,
+centerPointColor: mainColor.shade900,
+markingColor: mainColor.shade900,
+                  dialColor:  mainColor.shade200,
+                  dialBorderWidthFactor: 0.1,
+                 markingWidthFactor:0.0,
+                  minuteHandLengthFactor:0.8,
+                  secondHandLengthFactor:0.4,
+                  hourNumberSizeFactor:1.3,
+                  dialBorderColor: mainColor.shade900,))),
+          ]
+      )
           : Container(),
       crossFadeState:
           _first ? CrossFadeState.showFirst : CrossFadeState.showSecond,
@@ -232,7 +246,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
         "width=$buienRadarWidth"
         "&height=$buienRadarHeight"
         "&renderBackground=True"
-        "&renderBranding=True"
+        "&renderBranding=false"
         "&renderText=true";
   }
 

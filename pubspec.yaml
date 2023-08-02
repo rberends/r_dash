@@ -39,6 +39,7 @@ dependencies:
   flutterpi_tool: ^0.0.5
   http: ^0.13.5
   intl: ^0.18.0
+  flutter_analog_clock: ^1.0.3
 
 dev_dependencies:
   flutter_test:
