@@ -76,7 +76,7 @@ class _DepartureWidgetState extends State<DepartureWidget> {
               children: [
                 Expanded(
                     child: Container(
-                        padding: const EdgeInsets.all(2),
+                        padding: const EdgeInsets.only(left:12),
                         child: Text(widget.departure.direction!,
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,

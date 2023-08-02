@@ -62,7 +62,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    var radarHeight = (MediaQuery.of(context).size.height / 5 * 3);
+    var radarHeight = (MediaQuery.of(context).size.height / 5 * 3.1);
     var radarWidth = (MediaQuery.of(context).size.width);
 
     buienRadarHeight = radarHeight.toInt();
@@ -84,9 +84,9 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                   scale: 0.8, child: Image.asset("assets/info.png")))),
       secondChild: !_delay
           ? Stack(
-          alignment: AlignmentDirectional.center,
+          alignment: AlignmentDirectional.topStart,
           children:[
-          Column(children: <Widget>[
+
               SizedBox(
                   width: radarWidth,
                   height: radarHeight,
@@ -109,10 +109,12 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                                   key: UniqueKey(),
                                 ),
                               ))))),
-              Container(
+            Column(children: <Widget>[
+              Expanded(child: Container()),
+              SizedBox(
                   height: MediaQuery.of(context).size.height / 5 * 2,
-                  color: mainColor.shade900,
                   child: Column(children: [
+                    Expanded(child: Container()),
                     ColorFiltered(
                         colorFilter: ColorFilter.mode(
                             mainColor.shade900, BlendMode.color),
@@ -123,7 +125,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                                   2 /
                                   5,
                               color: mainColor.shade900,
-                              padding: const EdgeInsets.all(8),
+                              padding: const EdgeInsets.only(left:36, right: 36),
                               alignment: Alignment.centerLeft,
                               child: const Text("Treinen",
                                   style: TextStyle(
@@ -131,7 +133,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                                     color: Colors.white,
                                     fontSize: 34,
                                   ))),
-                          Expanded(child: Container()),
+
 
                         ])),
                     ListView.builder(
@@ -146,26 +148,24 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                   ])),
             ]),
             Container(
-                margin: EdgeInsets.only(top: radarHeight/5.5),
-            child:
-            SizedBox(
+              margin:  const EdgeInsets.all(6),
                 width: radarWidth/2.5,
                 height: radarHeight/2.5,
                 child:
                 AnalogClock.dark(
-                  hourNumberColor: mainColor.shade900,
-                  hourHandColor : mainColor.shade900,
-                  minuteHandColor : mainColor.shade900,
-                  secondHandColor : mainColor.shade900,
-centerPointColor: mainColor.shade900,
+                  hourNumberColor:mainColor.shade100,
+                  hourHandColor : mainColor.shade100,
+                  minuteHandColor : mainColor.shade100,
+                  secondHandColor : mainColor.shade100,
+centerPointColor: mainColor.shade100,
 markingColor: mainColor.shade900,
-                  dialColor:  mainColor.shade200,
+                  dialColor:  mainColor.shade900,
                   dialBorderWidthFactor: 0.1,
                  markingWidthFactor:0.0,
                   minuteHandLengthFactor:0.8,
                   secondHandLengthFactor:0.4,
-                  hourNumberSizeFactor:1.3,
-                  dialBorderColor: mainColor.shade900,))),
+                  hourNumberSizeFactor:1.1,
+                  dialBorderColor: mainColor.shade100,)),
           ]
       )
           : Container(),
@@ -247,7 +247,7 @@ markingColor: mainColor.shade900,
         "&height=$buienRadarHeight"
         "&renderBackground=True"
         "&renderBranding=false"
-        "&renderText=true";
+        "&renderText=false";
   }
 
   Future<String> getTravelInfo() async {
