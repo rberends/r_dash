@@ -153,7 +153,19 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                                 Expanded(child: Container()),
                               ])),
                           departures.isEmpty
-                              ? Center(
+                              ? Container(
+                              color: mainColor.shade900,
+                             height: MediaQuery.of(context)
+                              .size
+                              .height /
+                              5 *
+                              2 - MediaQuery.of(context)
+                                 .size
+                                 .height /
+                                 5 *
+                                 2/5,
+                            child:
+                              Center(
                                   heightFactor: 2.7,
                                   child: Text(
                                     'No departing \n trains found',
@@ -163,7 +175,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                                       fontSize: 36,
                                     ),
                                     textAlign: TextAlign.center,
-                                  ))
+                                  )))
                               : ListView.builder(
                                   shrinkWrap: true,
                                   padding: const EdgeInsets.all(0),
@@ -197,9 +209,11 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                         dialColor: mainColor.shade900,
                         dialBorderWidthFactor: 0.1,
                         markingWidthFactor: 0.0,
-                        minuteHandLengthFactor: 0.8,
-                        secondHandLengthFactor: 0.4,
+                        minuteHandLengthFactor: 0.70,
+                        hourHandLengthFactor: 0.8,
+                        secondHandLengthFactor: 0.6,
                         hourNumberSizeFactor: 1.1,
+                        hourNumberRadiusFactor:0.97,
                         dialBorderColor: mainColor.shade100,
                       )))),
             ])
