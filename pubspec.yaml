@@ -67,6 +67,7 @@ flutter:
     - assets/info.png
     - assets/placeholder.gif
     - assets/placeholder.jpeg
+    - assets/train_icon.png
 
 
   # To add assets to your application, add an assets section, like this:

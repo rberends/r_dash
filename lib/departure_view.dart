@@ -70,13 +70,13 @@ class _DepartureWidgetState extends State<DepartureWidget> {
         colorFilter: ColorFilter.mode(mainColor.shade900, BlendMode.color),
         child: Container(
             padding: EdgeInsets.all(10),
-            color: widget.light ? mainColor.shade400 : mainColor.shade900,
+            color: widget.light ? mainColor.shade900 : mainColor.shade400,
             height: MediaQuery.of(context).size.height / 5 * 2 / 5,
             child: Row(
               children: [
                 Expanded(
                     child: Container(
-                        padding: const EdgeInsets.only(left:12),
+                        padding: const EdgeInsets.only(left: 12),
                         child: Text(widget.departure.direction!,
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,

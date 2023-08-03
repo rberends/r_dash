@@ -4,13 +4,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_analog_clock/flutter_analog_clock.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:web_page_poc/departure_view.dart';
 import 'package:web_page_poc/podo/departure.dart';
 import 'package:web_page_poc/podo/ns_response.dart';
 import 'package:web_page_poc/r_dash_globals.dart';
-import 'package:flutter_analog_clock/flutter_analog_clock.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -64,9 +64,8 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     var displayWidth = MediaQuery.of(context).size.width;
 
-
     var radarHeight = (MediaQuery.of(context).size.height / 5 * 3.5);
-    var radarWidth = displayWidth*1.4;
+    var radarWidth = displayWidth * 1.4;
 
     buienRadarHeight = radarHeight.toInt();
     buienRadarWidth = radarWidth.toInt();
@@ -86,10 +85,8 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
               child: Transform.scale(
                   scale: 0.8, child: Image.asset("assets/info.png")))),
       secondChild: !_delay
-          ? Stack(
-          alignment: AlignmentDirectional.topStart,
-          children:[
- SizedBox(
+          ? Stack(alignment: AlignmentDirectional.topStart, children: [
+              SizedBox(
                   width: radarWidth,
                   height: radarHeight,
                   child: ColorFiltered(
@@ -111,67 +108,99 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                                   key: UniqueKey(),
                                 ),
                               ))))),
-            Column(children: <Widget>[
-              Expanded(child: Container()),
-              SizedBox(
-                  height: MediaQuery.of(context).size.height / 5 * 2,
-                  child: Column(children: [
-                    Expanded(child: Container()),
-                    ColorFiltered(
-                        colorFilter: ColorFilter.mode(
-                            mainColor.shade900, BlendMode.color),
-                        child: Row(children: [
+              Column(
+                children: <Widget>[
+                  Expanded(child: Container()),
+                  SizedBox(
+                      height: MediaQuery.of(context).size.height / 5 * 2,
+                      child: Stack(
+                        alignment: Alignment.bottomLeft,
+                        children: [
                           Container(
-                              height: MediaQuery.of(context).size.height /
-                                  5 *
-                                  2 /
-                                  5,
-                              color: mainColor.shade900,
-                              padding: const EdgeInsets.only(left:36, right: 36),
-                              alignment: Alignment.centerLeft,
-                              child: const Text("Treinen",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                    fontSize: 34,
-                                  ))),
-            Expanded(child: Container()),
-                        ])),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      padding: const EdgeInsets.all(0),
-                      itemCount: departures.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return DepartureWidget(
-                            departure: departures[index], light: index.isEven);
-                      },
-                    ),
-                  ])),
-            ]),
-            Container(
-              margin:  const EdgeInsets.only(left: 12),
-                width: displayWidth/2.5,
-                height: radarHeight/2.5,
-                child:
-                    Transform.scale(
+                              padding: EdgeInsets.only(
+                                  bottom: MediaQuery.of(context).size.height /
+                                          5 *
+                                          2 -
+                                      MediaQuery.of(context).size.height /
+                                          5 *
+                                          2 /
+                                          4),
+                              child: Row(children: [
+                                ClipRRect(
+                                    borderRadius: const BorderRadius.only(
+                                        topRight: Radius.circular(16)),
+                                    child: ColorFiltered(
+                                        colorFilter: ColorFilter.mode(
+                                            mainColor.shade900,
+                                            BlendMode.color),
+                                        child: Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height /
+                                              5 *
+                                              2 /
+                                              5,
+                                          color: mainColor.shade400,
+                                          padding: const EdgeInsets.only(
+                                              left: 16,
+                                              right: 16,
+                                              top: 16,
+                                              bottom: 26),
+                                          alignment: Alignment.centerLeft,
+                                          child: Image.asset(
+                                              "assets/train_icon.png"),
+                                        ))),
+                                Expanded(child: Container()),
+                              ])),
+                          departures.isEmpty
+                              ? Center(
+                                  heightFactor: 2.7,
+                                  child: Text(
+                                    'No departing \n trains found',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: mainColor.shade100,
+                                      fontSize: 36,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ))
+                              : ListView.builder(
+                                  shrinkWrap: true,
+                                  padding: const EdgeInsets.all(0),
+                                  itemCount: departures.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return DepartureWidget(
+                                        departure: departures[index],
+                                        light: index.isEven);
+                                  },
+                                ),
+                        ],
+                      )),
+                ],
+              ),
+              Container(
+                  margin: const EdgeInsets.only(left: 12),
+                  width: displayWidth / 2.5,
+                  height: radarHeight / 2.5,
+                  child: Transform.scale(
                       scaleY: 0.92,
-                      child:
-                AnalogClock.dark(
-                  hourNumberColor:mainColor.shade100,
-                  hourHandColor : mainColor.shade100,
-                  minuteHandColor : mainColor.shade100,
-                  secondHandColor : mainColor.shade100,
-centerPointColor: mainColor.shade100,
-markingColor: mainColor.shade900,
-                  dialColor:  mainColor.shade900,
-                  dialBorderWidthFactor: 0.1,
-                 markingWidthFactor:0.0,
-                  minuteHandLengthFactor:0.8,
-                  secondHandLengthFactor:0.4,
-                  hourNumberSizeFactor:1.1,
-                  dialBorderColor: mainColor.shade100,))),
-          ]
-      )
+                      child: AnalogClock.dark(
+                        hourNumberColor: mainColor.shade100,
+                        hourHandColor: mainColor.shade100,
+                        minuteHandColor: mainColor.shade100,
+                        secondHandColor: mainColor.shade100,
+                        centerPointColor: mainColor.shade100,
+                        markingColor: mainColor.shade900,
+                        dialColor: mainColor.shade900,
+                        dialBorderWidthFactor: 0.1,
+                        markingWidthFactor: 0.0,
+                        minuteHandLengthFactor: 0.8,
+                        secondHandLengthFactor: 0.4,
+                        hourNumberSizeFactor: 1.1,
+                        dialBorderColor: mainColor.shade100,
+                      ))),
+            ])
           : Container(),
       crossFadeState:
           _first ? CrossFadeState.showFirst : CrossFadeState.showSecond,
