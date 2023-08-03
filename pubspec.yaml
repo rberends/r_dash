@@ -65,7 +65,6 @@ flutter:
 
   assets:
     - assets/info.png
-    - assets/placeholder.gif
     - assets/placeholder.jpeg
     - assets/train_icon.png
 
