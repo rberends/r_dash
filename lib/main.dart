@@ -183,7 +183,9 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                   margin: const EdgeInsets.only(left: 12),
                   width: displayWidth / 2.5,
                   height: radarHeight / 2.5,
-                  child: Transform.scale(
+                  child: Opacity(
+                      opacity: 0.9,
+                      child:Transform.scale(
                       scaleY: 0.92,
                       child: AnalogClock.dark(
                         hourNumberColor: mainColor.shade100,
@@ -199,7 +201,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                         secondHandLengthFactor: 0.4,
                         hourNumberSizeFactor: 1.1,
                         dialBorderColor: mainColor.shade100,
-                      ))),
+                      )))),
             ])
           : Container(),
       crossFadeState:
