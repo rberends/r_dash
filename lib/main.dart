@@ -140,7 +140,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                                               5 *
                                               2 /
                                               5,
-                                          color: mainColor.shade400,
+                                          color: mainColor.shade900,
                                           padding: const EdgeInsets.only(
                                               left: 16,
                                               right: 16,
