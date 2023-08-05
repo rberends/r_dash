@@ -4,13 +4,15 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_analog_clock/flutter_analog_clock.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:web_page_poc/departure_view.dart';
+import 'package:web_page_poc/no_trains_widget.dart';
 import 'package:web_page_poc/podo/departure.dart';
 import 'package:web_page_poc/podo/ns_response.dart';
+import 'package:web_page_poc/r_dash_clock_widget.dart';
 import 'package:web_page_poc/r_dash_globals.dart';
+import 'package:web_page_poc/train_icon_widget.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -62,9 +64,10 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    var displayHeight = MediaQuery.of(context).size.height;
     var displayWidth = MediaQuery.of(context).size.width;
 
-    var radarHeight = (MediaQuery.of(context).size.height / 5 * 3.5);
+    var radarHeight = displayHeight * 0.7;
     var radarWidth = displayWidth * 1.4;
 
     buienRadarHeight = radarHeight.toInt();
@@ -112,110 +115,40 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                 children: <Widget>[
                   Expanded(child: Container()),
                   SizedBox(
-                      height: MediaQuery.of(context).size.height / 5 * 2,
+                      height: displayHeight * 0.4,
                       child: Stack(
                         alignment: Alignment.bottomLeft,
                         children: [
                           Container(
-                              padding: EdgeInsets.only(
-                                  bottom: MediaQuery.of(context).size.height /
-                                          5 *
-                                          2 -
-                                      MediaQuery.of(context).size.height /
-                                          5 *
-                                          2 /
-                                          4),
+                              padding:
+                                  EdgeInsets.only(bottom: displayHeight * 0.3),
                               child: Row(children: [
-                                ClipRRect(
-                                    borderRadius: const BorderRadius.only(
-                                        topRight: Radius.circular(16)),
-                                    child: ColorFiltered(
-                                        colorFilter: ColorFilter.mode(
-                                            mainColor.shade900,
-                                            BlendMode.color),
-                                        child: Container(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height /
-                                              5 *
-                                              2 /
-                                              5,
-                                          color: mainColor.shade900,
-                                          padding: const EdgeInsets.only(
-                                              left: 16,
-                                              right: 16,
-                                              top: 16,
-                                              bottom: 26),
-                                          alignment: Alignment.centerLeft,
-                                          child: Image.asset(
-                                              "assets/train_icon.png"),
-                                        ))),
+                                const TrainIconWidget(),
                                 Expanded(child: Container()),
                               ])),
                           departures.isEmpty
-                              ? Container(
-                              color: mainColor.shade900,
-                             height: MediaQuery.of(context)
-                              .size
-                              .height /
-                              5 *
-                              2 - MediaQuery.of(context)
-                                 .size
-                                 .height /
-                                 5 *
-                                 2/5,
-                            child:
-                              Center(
-                                  heightFactor: 2.7,
-                                  child: Text(
-                                    'No departing \n trains found',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: mainColor.shade100,
-                                      fontSize: 36,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  )))
-                              : ListView.builder(
-                                  shrinkWrap: true,
-                                  padding: const EdgeInsets.all(0),
-                                  itemCount: departures.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return DepartureWidget(
-                                        departure: departures[index],
-                                        light: index.isEven);
-                                  },
-                                ),
+                              ? const NoTrainsWidget()
+                              : Padding(
+                                  padding: EdgeInsets.only(
+                                      top: displayHeight * 0.08),
+                                  child: Align(
+                                      alignment: Alignment.topLeft,
+                                      child: ListView.builder(
+                                        shrinkWrap: true,
+                                        padding: const EdgeInsets.all(0),
+                                        itemCount: departures.length,
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          return DepartureWidget(
+                                              departure: departures[index],
+                                              light: index.isEven);
+                                        },
+                                      ))),
                         ],
                       )),
                 ],
               ),
-              Container(
-                  margin: const EdgeInsets.only(left: 12),
-                  width: displayWidth / 2.5,
-                  height: radarHeight / 2.5,
-                  child: Opacity(
-                      opacity: 0.9,
-                      child:Transform.scale(
-                      scaleY: 0.92,
-                      child: AnalogClock.dark(
-                        hourNumberColor: mainColor.shade100,
-                        hourHandColor: mainColor.shade100,
-                        minuteHandColor: mainColor.shade100,
-                        secondHandColor: mainColor.shade100,
-                        centerPointColor: mainColor.shade100,
-                        markingColor: mainColor.shade900,
-                        dialColor: mainColor.shade900,
-                        dialBorderWidthFactor: 0.1,
-                        markingWidthFactor: 0.0,
-                        minuteHandLengthFactor: 0.70,
-                        hourHandLengthFactor: 0.8,
-                        secondHandLengthFactor: 0.6,
-                        hourNumberSizeFactor: 1.1,
-                        hourNumberRadiusFactor:0.97,
-                        dialBorderColor: mainColor.shade100,
-                      )))),
+              const RDashClockWidget(),
             ])
           : Container(),
       crossFadeState:
