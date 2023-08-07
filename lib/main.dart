@@ -19,7 +19,6 @@ import 'package:web_page_poc/train_icon_widget.dart';
 
 import 'booting_widget.dart';
 
-
 class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
@@ -32,11 +31,11 @@ class MyHttpOverrides extends HttpOverrides {
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  HttpOverrides.global = new MyHttpOverrides();
+  HttpOverrides.global = MyHttpOverrides();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   runApp(MaterialApp(
-    home: new MyApp(),
+    home: MyApp(),
     color: mainColor.shade900,
     theme: ThemeData(
       scaffoldBackgroundColor: mainColor.shade900,
@@ -46,15 +45,14 @@ Future main() async {
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
   @override
-  _MyAppState createState() => new _MyAppState();
+  _MyAppState createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
-
   RDashState rDashState = RDashState.booting;
-
-  late Timer _updateNsTimer, _updateRadarTimer;
 
   var url = "";
 
@@ -70,14 +68,8 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    var displayHeight = MediaQuery
-        .of(context)
-        .size
-        .height;
-    var displayWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
+    var displayHeight = MediaQuery.of(context).size.height;
+    var displayWidth = MediaQuery.of(context).size.width;
 
     var radarHeight = displayHeight * 0.7;
     var radarWidth = displayWidth * 1.4;
@@ -91,100 +83,115 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
 
     var scaffold = Scaffold(
         body: SafeArea(
-          child:SizedBox(
-            width: displayWidth,
-            height: displayHeight,
-            child: AnimatedCrossFade(
-              duration: const Duration(seconds: 3),
-              firstChild: SizedBox(
-    width: displayWidth,
-    height: displayHeight, child: const BootingWidget()),
-              secondChild: AnimatedCrossFade(
-                duration: const Duration(seconds: 3),
-                  firstChild:
-    SizedBox(
-    width: displayWidth,
-    height: displayHeight,child:
-                  Stack(alignment: AlignmentDirectional.topStart, children: [
-                SizedBox(
-                    width: radarWidth,
-                    height: radarHeight,
-                    child: ColorFiltered(
-                        colorFilter:
-                        ColorFilter.mode(mainColor.shade900, BlendMode.color),
-                        child: ColorFiltered(
-                            colorFilter: ColorFilter.mode(
-                                mainColor.shade900, BlendMode.screen),
-                            child: ColorFiltered(
-                                colorFilter: const ColorFilter.mode(
-                                    Colors.black54, BlendMode.overlay),
-                                child: ColorFiltered(
-                                  colorFilter: const ColorFilter.mode(
-                                      Colors.grey, BlendMode.saturation),
-                                  child: FadeInImage.assetNetwork(
-                                    placeholder: 'assets/placeholder.jpeg',
-                                    image: url,
-                                    imageErrorBuilder: (BuildContext context,
-                                      Object exception,
-                                      StackTrace? stackTrace) {
-                                    return Image.asset(
-                                        'assets/placeholder.jpeg',
-                                        width: buienRadarWidth.toDouble(),
-                                        height: buienRadarHeight.toDouble(),
-                                        fit: BoxFit.cover);
-                                  },
-                                    fit: BoxFit.cover,
-                                    key: UniqueKey(),
-                                  ),
-                                ))))),
-                Column(
-                  children: <Widget>[
-                    Expanded(child: Container()),
-                    SizedBox(
-                        height: displayHeight * 0.4,
+            child: SizedBox(
+                width: displayWidth,
+                height: displayHeight,
+                child: AnimatedCrossFade(
+                  duration: const Duration(seconds: 3),
+                  firstChild: const BootingWidget(),
+                  secondChild: AnimatedCrossFade(
+                    duration: const Duration(seconds: 3),
+                    firstChild: SizedBox(
+                        width: displayWidth,
+                        height: displayHeight,
                         child: Stack(
-                          alignment: Alignment.bottomLeft,
-                          children: [
-                            Container(
-                                padding:
-                                EdgeInsets.only(bottom: displayHeight * 0.3),
-                                child: Row(children: [
-                                  const TrainIconWidget(),
+                            alignment: AlignmentDirectional.topStart,
+                            children: [
+                              SizedBox(
+                                  width: radarWidth,
+                                  height: radarHeight,
+                                  child: ColorFiltered(
+                                      colorFilter: ColorFilter.mode(
+                                          mainColor.shade900, BlendMode.color),
+                                      child: ColorFiltered(
+                                          colorFilter: ColorFilter.mode(
+                                              mainColor.shade900,
+                                              BlendMode.screen),
+                                          child: ColorFiltered(
+                                              colorFilter:
+                                                  const ColorFilter.mode(
+                                                      Colors.black54,
+                                                      BlendMode.overlay),
+                                              child: ColorFiltered(
+                                                colorFilter:
+                                                    const ColorFilter.mode(
+                                                        Colors.grey,
+                                                        BlendMode.saturation),
+                                                child: FadeInImage.assetNetwork(
+                                                  placeholder:
+                                                      'assets/placeholder.jpeg',
+                                                  image: url,
+                                                  imageErrorBuilder:
+                                                      (BuildContext context,
+                                                          Object exception,
+                                                          StackTrace?
+                                                              stackTrace) {
+                                                    return Image.asset(
+                                                        'assets/placeholder.jpeg',
+                                                        width: buienRadarWidth
+                                                            .toDouble(),
+                                                        height: buienRadarHeight
+                                                            .toDouble(),
+                                                        fit: BoxFit.cover);
+                                                  },
+                                                  fit: BoxFit.cover,
+                                                  key: UniqueKey(),
+                                                ),
+                                              ))))),
+                              Column(
+                                children: <Widget>[
                                   Expanded(child: Container()),
-                                ])),
-                            departures.isEmpty
-                                ? const NoTrainsWidget()
-                                : Padding(
-                                padding: EdgeInsets.only(
-                                    top: displayHeight * 0.08),
-                                child: Align(
-                                    alignment: Alignment.topLeft,
-                                    child: ListView.builder(
-                                      shrinkWrap: true,
-                                      padding: const EdgeInsets.all(0),
-                                      itemCount: departures.length,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return DepartureWidget(
-                                            departure: departures[index],
-                                            light: index.isEven);
-                                      },
-                                    ))),
-                          ],
-                        )),
-                  ],
-                ),
-                const RDashClockWidget(),
-              ])),
-                  secondChild : SizedBox(
-    width: displayWidth,
-    height: displayHeight,child: const NoConnectionWidget()),
-                crossFadeState:
-                rDashState == RDashState.offline ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-              ),
-              crossFadeState:
-              rDashState == RDashState.booting ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-            ))));
+                                  SizedBox(
+                                      height: displayHeight * 0.4,
+                                      child: Stack(
+                                        alignment: Alignment.bottomLeft,
+                                        children: [
+                                          Container(
+                                              padding: EdgeInsets.only(
+                                                  bottom: displayHeight * 0.3),
+                                              child: Row(children: [
+                                                const TrainIconWidget(),
+                                                Expanded(child: Container()),
+                                              ])),
+                                          departures.isEmpty
+                                              ? const NoTrainsWidget()
+                                              : Padding(
+                                                  padding: EdgeInsets.only(
+                                                      top:
+                                                          displayHeight * 0.08),
+                                                  child: Align(
+                                                      alignment:
+                                                          Alignment.topLeft,
+                                                      child: ListView.builder(
+                                                        shrinkWrap: true,
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(0),
+                                                        itemCount:
+                                                            departures.length,
+                                                        itemBuilder:
+                                                            (BuildContext
+                                                                    context,
+                                                                int index) {
+                                                          return DepartureWidget(
+                                                              departure:
+                                                                  departures[
+                                                                      index],
+                                                              light:
+                                                                  index.isEven);
+                                                        },
+                                                      ))),
+                                        ],
+                                      )),
+                                ],
+                              ),
+                              const RDashClockWidget(),
+                            ])),
+                    secondChild: const NoConnectionWidget(),
+                    crossFadeState: rDashState == RDashState.offline ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                  ),
+                  crossFadeState: rDashState == RDashState.booting ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                ))));
     return scaffold;
   }
 
@@ -199,53 +206,30 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
 
     animationController = AnimationController(
         duration: const Duration(milliseconds: 2500), vsync: this);
-    animation = CurvedAnimation(
-      parent: animationController!,
-      curve: Curves.ease,
-    );
+    animation =
+        CurvedAnimation(parent: animationController!, curve: Curves.ease);
 
     startTimer(false);
     startTimer(true);
 
-    //Timer.periodic(const Duration(seconds: 5), (Timer t) => print(getConnectionStatus()));
+    Future.delayed(const Duration(seconds: 4),
+        () => setState(() => rDashState = RDashState.online));
 
-    Future.delayed(const Duration(seconds: 2), () {
-      setState(() {
-        rDashState = RDashState.online;
-      });
+    // defines a timer
+    Timer.periodic(const Duration(seconds: 30), (_) => setState(getTravelInfo));
+
+    Timer.periodic(const Duration(seconds: 500), (_) {
+      PaintingBinding.instance.imageCache.clear();
+      imageCache.clear();
+      imageCache.clearLiveImages();
+      setState(
+          () => url = getNewBuienRadarUrl(buienRadarHeight, buienRadarWidth));
     });
-
-    // defines a timer
-    _updateRadarTimer = Timer.periodic(
-      const Duration(seconds: 500),
-          (Timer t) {
-        setState(() {
-          PaintingBinding.instance.imageCache.clear();
-          imageCache.clear();
-          imageCache.clearLiveImages();
-          url = getNewBuienRadarUrl(buienRadarHeight, buienRadarWidth);
-        });
-      },
-    );
-
-    // defines a timer
-    _updateNsTimer = Timer.periodic(
-      const Duration(seconds: 30),
-          (Timer t) {
-        setState(() {
-          getTravelInfo();
-        });
-      },
-    );
   }
 
   void _getTimeString() {
-    final DateTime now = DateTime.now();
-    final String formattedTime = _formatTime(now);
-
-    setState(() {
-      _timeString = formattedTime;
-    });
+    final formattedTime = _formatTime(DateTime.now());
+    setState(() => _timeString = formattedTime);
   }
 
   String _formatTime(DateTime dateTime) {
@@ -273,50 +257,26 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
         headers: headers);
     final body = json.decode(response.body);
     setState(() {
-      departures = NSResponse
-          .fromJson(body)
-          .payload!
-          .departures!;
+      departures = NSResponse.fromJson(body).payload!.departures!;
       print("ns state updated");
     });
     return response.body;
   }
 
   Future<bool> getConnectionStatus() async {
-    print("starting ping");
-    // Create ping object with desired args
     final ping = Ping('8.8.8.8', count: 3);
-
-    // Begin ping process and listen for output
-    Future<PingData> whenTrue(Stream<PingData> source) {
-      return source.firstWhere((PingData item) => item.summary != null);
-    }
-
-    PingData result = await whenTrue(ping.stream);
-
-    bool success = result.summary?.transmitted == result.summary?.received;
-
-    print("ping ${result.summary} - $success");
-    return success;
+    final result = await ping.stream.firstWhere((item) => item.summary != null);
+    return result.summary?.transmitted == result.summary?.received;
   }
 
   void startTimer(bool repeat) {
-    Timer.periodic(Duration(seconds: repeat ? 10 : 0), (Timer t) async {
+    Timer.periodic(Duration(seconds: repeat ? 10 : 0), (t) async {
       t.cancel();
       bool success = await getConnectionStatus();
-      if (!success) {
-        setState(() {
-          rDashState = RDashState.offline;
-        });
-      }
-      else{
-        setState(() {
-          rDashState = RDashState.online;
-        });
-      }
-      if (repeat) {
-        startTimer(true);
-      }
+      setState(() {
+        rDashState = success ? RDashState.online : RDashState.offline;
+      });
+      if (repeat) startTimer(true);
     });
   }
 }
