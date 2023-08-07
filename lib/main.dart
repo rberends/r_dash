@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:web_page_poc/departure_view.dart';
+import 'package:web_page_poc/no_connection_widget.dart';
 import 'package:web_page_poc/no_trains_widget.dart';
 import 'package:web_page_poc/podo/departure.dart';
 import 'package:web_page_poc/podo/ns_response.dart';
@@ -15,6 +16,8 @@ import 'package:web_page_poc/r_dash_clock_widget.dart';
 import 'package:web_page_poc/r_dash_globals.dart';
 import 'package:web_page_poc/r_dash_state.dart';
 import 'package:web_page_poc/train_icon_widget.dart';
+
+import 'booting_widget.dart';
 
 
 class MyHttpOverrides extends HttpOverrides {
@@ -60,9 +63,6 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
   AnimationController? animationController;
   CurvedAnimation? animation;
 
-  bool _first = true;
-  bool _delay = true;
-
   var buienRadarHeight = 0;
   var buienRadarWidth = 0;
 
@@ -91,16 +91,21 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
 
     var scaffold = Scaffold(
         body: SafeArea(
+          child:SizedBox(
+            width: displayWidth,
+            height: displayHeight,
             child: AnimatedCrossFade(
               duration: const Duration(seconds: 3),
               firstChild: SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  child: Center(
-                      child: Transform.scale(
-                          scale: 0.8, child: Image.asset("assets/info.png")))),
-              secondChild: !_delay
-                  ? Stack(alignment: AlignmentDirectional.topStart, children: [
+    width: displayWidth,
+    height: displayHeight, child: const BootingWidget()),
+              secondChild: AnimatedCrossFade(
+                duration: const Duration(seconds: 3),
+                  firstChild:
+    SizedBox(
+    width: displayWidth,
+    height: displayHeight,child:
+                  Stack(alignment: AlignmentDirectional.topStart, children: [
                 SizedBox(
                     width: radarWidth,
                     height: radarHeight,
@@ -170,11 +175,16 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                   ],
                 ),
                 const RDashClockWidget(),
-              ])
-                  : Container(),
+              ])),
+                  secondChild : SizedBox(
+    width: displayWidth,
+    height: displayHeight,child: const NoConnectionWidget()),
+                crossFadeState:
+                rDashState == RDashState.offline ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+              ),
               crossFadeState:
-              _first ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-            )));
+              rDashState == RDashState.booting ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+            ))));
     return scaffold;
   }
 
@@ -201,13 +211,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
 
     Future.delayed(const Duration(seconds: 2), () {
       setState(() {
-        _first = false;
-      });
-    });
-
-    Future.delayed(const Duration(seconds: 2), () {
-      setState(() {
-        _delay = false;
+        rDashState = RDashState.online;
       });
     });
 
@@ -269,7 +273,6 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
         headers: headers);
     final body = json.decode(response.body);
     setState(() {
-      _first = false;
       departures = NSResponse
           .fromJson(body)
           .payload!
@@ -303,7 +306,12 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
       bool success = await getConnectionStatus();
       if (!success) {
         setState(() {
-          _first = true;
+          rDashState = RDashState.offline;
+        });
+      }
+      else{
+        setState(() {
+          rDashState = RDashState.online;
         });
       }
       if (repeat) {
