@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dart_ping/dart_ping.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_analog_clock/flutter_analog_clock.dart';
@@ -104,8 +105,14 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                                 child: FadeInImage.assetNetwork(
                                   placeholder: 'assets/placeholder.jpeg',
                                   image: url,
-                                  imageErrorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
-                                    return Image.asset( 'assets/placeholder.jpeg',  fit: BoxFit.cover);
+                                  imageErrorBuilder: (BuildContext context,
+                                      Object exception,
+                                      StackTrace? stackTrace) {
+                                    return Image.asset(
+                                        'assets/placeholder.jpeg',
+                                        width: buienRadarWidth.toDouble(),
+                                        height:buienRadarHeight.toDouble(),
+                                        fit: BoxFit.cover);
                                   },
                                   fit: BoxFit.cover,
                                   key: UniqueKey(),
@@ -157,28 +164,25 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                               ])),
                           departures.isEmpty
                               ? Container(
-                              color: mainColor.shade900,
-                             height: MediaQuery.of(context)
-                              .size
-                              .height /
-                              5 *
-                              2 - MediaQuery.of(context)
-                                 .size
-                                 .height /
-                                 5 *
-                                 2/5,
-                            child:
-                              Center(
-                                  heightFactor: 2.7,
-                                  child: Text(
-                                    'No departing \n trains found',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: mainColor.shade100,
-                                      fontSize: 36,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  )))
+                                  color: mainColor.shade900,
+                                  height: MediaQuery.of(context).size.height /
+                                          5 *
+                                          2 -
+                                      MediaQuery.of(context).size.height /
+                                          5 *
+                                          2 /
+                                          5,
+                                  child: Center(
+                                      heightFactor: 2.7,
+                                      child: Text(
+                                        'No departing \n trains found',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: mainColor.shade100,
+                                          fontSize: 36,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      )))
                               : ListView.builder(
                                   shrinkWrap: true,
                                   padding: const EdgeInsets.all(0),
@@ -200,25 +204,25 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                   height: radarHeight / 2.5,
                   child: Opacity(
                       opacity: 0.9,
-                      child:Transform.scale(
-                      scaleY: 0.92,
-                      child: AnalogClock.dark(
-                        hourNumberColor: mainColor.shade100,
-                        hourHandColor: mainColor.shade100,
-                        minuteHandColor: mainColor.shade100,
-                        secondHandColor: mainColor.shade100,
-                        centerPointColor: mainColor.shade100,
-                        markingColor: mainColor.shade900,
-                        dialColor: mainColor.shade900,
-                        dialBorderWidthFactor: 0.1,
-                        markingWidthFactor: 0.0,
-                        minuteHandLengthFactor: 0.70,
-                        hourHandLengthFactor: 0.8,
-                        secondHandLengthFactor: 0.6,
-                        hourNumberSizeFactor: 1.1,
-                        hourNumberRadiusFactor:0.97,
-                        dialBorderColor: mainColor.shade100,
-                      )))),
+                      child: Transform.scale(
+                          scaleY: 0.92,
+                          child: AnalogClock.dark(
+                            hourNumberColor: mainColor.shade100,
+                            hourHandColor: mainColor.shade100,
+                            minuteHandColor: mainColor.shade100,
+                            secondHandColor: mainColor.shade100,
+                            centerPointColor: mainColor.shade100,
+                            markingColor: mainColor.shade900,
+                            dialColor: mainColor.shade900,
+                            dialBorderWidthFactor: 0.1,
+                            markingWidthFactor: 0.0,
+                            minuteHandLengthFactor: 0.70,
+                            hourHandLengthFactor: 0.8,
+                            secondHandLengthFactor: 0.6,
+                            hourNumberSizeFactor: 1.1,
+                            hourNumberRadiusFactor: 0.97,
+                            dialBorderColor: mainColor.shade100,
+                          )))),
             ])
           : Container(),
       crossFadeState:
@@ -232,9 +236,8 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
     // TODO: implement initState
     super.initState();
 
-    var string = getTravelInfo();
+    getTravelInfo();
     _timeString = _formatTime(DateTime.now());
-
     Timer.periodic(const Duration(seconds: 5), (Timer t) => _getTimeString());
 
     animationController = AnimationController(
@@ -243,6 +246,11 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
       parent: animationController!,
       curve: Curves.ease,
     );
+
+    startTimer();
+
+    //Timer.periodic(const Duration(seconds: 5), (Timer t) => print(getConnectionStatus()));
+
     Future.delayed(const Duration(seconds: 2), () {
       setState(() {
         _first = false;
@@ -318,5 +326,35 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
       print("ns state updated");
     });
     return response.body;
+  }
+
+  Future<bool> getConnectionStatus() async {
+    print("starting ping");
+    // Create ping object with desired args
+    final ping = Ping('8.8.8.8', count: 3);
+
+    // Begin ping process and listen for output
+    Future<PingData> whenTrue(Stream<PingData> source) {
+    return source.firstWhere((PingData item) => item.summary!=null);
+    }
+    PingData result = await whenTrue(ping.stream);
+
+    bool success=result.summary?.transmitted==result.summary?.received;
+
+    print("ping ${result.summary} - $success");
+    return success;
+  }
+
+  void startTimer() {
+    Timer.periodic(const Duration(seconds: 10), (Timer t) async {
+      t.cancel();
+     bool success= await getConnectionStatus();
+      if(!success) {
+        setState(() {
+        _first = true;
+      });
+      }
+      startTimer();
+    });
   }
 }
