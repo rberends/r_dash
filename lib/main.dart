@@ -12,6 +12,7 @@ import 'package:web_page_poc/departure_view.dart';
 import 'package:web_page_poc/podo/departure.dart';
 import 'package:web_page_poc/podo/ns_response.dart';
 import 'package:web_page_poc/r_dash_globals.dart';
+import 'package:web_page_poc/state.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -44,6 +45,9 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
+
+  RDashState rDashState = RDashState.booting;
+
   late Timer _updateNsTimer, _updateRadarTimer;
 
   var url = "";
@@ -111,7 +115,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                                     return Image.asset(
                                         'assets/placeholder.jpeg',
                                         width: buienRadarWidth.toDouble(),
-                                        height:buienRadarHeight.toDouble(),
+                                        height: buienRadarHeight.toDouble(),
                                         fit: BoxFit.cover);
                                   },
                                   fit: BoxFit.cover,
@@ -247,7 +251,8 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
       curve: Curves.ease,
     );
 
-    startTimer();
+    startTimer(false);
+    startTimer(true);
 
     //Timer.periodic(const Duration(seconds: 5), (Timer t) => print(getConnectionStatus()));
 
@@ -335,26 +340,29 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
 
     // Begin ping process and listen for output
     Future<PingData> whenTrue(Stream<PingData> source) {
-    return source.firstWhere((PingData item) => item.summary!=null);
+      return source.firstWhere((PingData item) => item.summary != null);
     }
+
     PingData result = await whenTrue(ping.stream);
 
-    bool success=result.summary?.transmitted==result.summary?.received;
+    bool success = result.summary?.transmitted == result.summary?.received;
 
     print("ping ${result.summary} - $success");
     return success;
   }
 
-  void startTimer() {
-    Timer.periodic(const Duration(seconds: 10), (Timer t) async {
+  void startTimer(bool repeat) {
+    Timer.periodic(Duration(seconds: repeat ? 10 : 0), (Timer t) async {
       t.cancel();
-     bool success= await getConnectionStatus();
-      if(!success) {
+      bool success = await getConnectionStatus();
+      if (!success) {
         setState(() {
-        _first = true;
-      });
+          _first = true;
+        });
       }
-      startTimer();
+      if (repeat) {
+        startTimer(true);
+      }
     });
   }
 }
