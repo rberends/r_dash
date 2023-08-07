@@ -9,8 +9,8 @@ class NoTrainsWidget extends StatelessWidget {
     // TODO: implement build
     return Container(
         color: mainColor.shade900,
-        height: MediaQuery.of(context).size.height / 5 * 2 -
-            MediaQuery.of(context).size.height / 5 * 2 / 5,
+        height: MediaQuery.of(context).size.height / 2.5 -
+            MediaQuery.of(context).size.height / 12.5,
         child: Center(
             heightFactor: 2.7,
             child: Text(

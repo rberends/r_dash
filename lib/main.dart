@@ -35,7 +35,7 @@ Future main() async {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   runApp(MaterialApp(
-    home: MyApp(),
+    home: const MyApp(),
     color: mainColor.shade900,
     theme: ThemeData(
       scaffoldBackgroundColor: mainColor.shade900,
@@ -87,10 +87,10 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                 width: displayWidth,
                 height: displayHeight,
                 child: AnimatedCrossFade(
-                  duration: const Duration(seconds: 3),
+                  duration: const Duration(seconds: 2),
                   firstChild: const BootingWidget(),
                   secondChild: AnimatedCrossFade(
-                    duration: const Duration(seconds: 3),
+                    duration: const Duration(seconds: 2),
                     firstChild: SizedBox(
                         width: displayWidth,
                         height: displayHeight,
@@ -204,26 +204,28 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
     _timeString = _formatTime(DateTime.now());
     Timer.periodic(const Duration(seconds: 5), (Timer t) => _getTimeString());
 
-    animationController = AnimationController(
-        duration: const Duration(milliseconds: 2500), vsync: this);
-    animation =
-        CurvedAnimation(parent: animationController!, curve: Curves.ease);
+    animationController = AnimationController(duration: const Duration(milliseconds: 2500), vsync: this);
+    animation = CurvedAnimation(parent: animationController!, curve: Curves.ease);
 
     startTimer(false);
     startTimer(true);
 
+    //Timer for initial done booting state.
     Future.delayed(const Duration(seconds: 4),
         () => setState(() => rDashState = RDashState.online));
 
-    // defines a timer
-    Timer.periodic(const Duration(seconds: 30), (_) => setState(getTravelInfo));
+    //Timer for ns travel info.
+    startNSTimer();
 
+    //Timer for buienradar info.
     Timer.periodic(const Duration(seconds: 500), (_) {
       PaintingBinding.instance.imageCache.clear();
       imageCache.clear();
       imageCache.clearLiveImages();
       setState(
-          () => url = getNewBuienRadarUrl(buienRadarHeight, buienRadarWidth));
+          () => url = getNewBuienRadarUrl(buienRadarHeight, buienRadarWidth)
+      );
+      print(url);
     });
   }
 
@@ -263,6 +265,9 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
     return response.body;
   }
 
+  /*
+     Ping to google to see our connection status.
+   */
   Future<bool> getConnectionStatus() async {
     final ping = Ping('8.8.8.8', count: 3);
     final result = await ping.stream.firstWhere((item) => item.summary != null);
@@ -277,6 +282,14 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
         rDashState = success ? RDashState.online : RDashState.offline;
       });
       if (repeat) startTimer(true);
+    });
+  }
+
+  void startNSTimer() {
+    Timer.periodic(Duration(seconds: 30), (t) async {
+      t.cancel();
+      await getTravelInfo();
+      startNSTimer();
     });
   }
 }
