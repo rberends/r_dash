@@ -83,7 +83,13 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
 
     var scaffold = Scaffold(
         body: SafeArea(
-            child: SizedBox(
+
+            child:  ColorFiltered(
+        colorFilter:
+        const ColorFilter.mode(
+        Colors.black54,
+        BlendMode.darken),
+    child: SizedBox(
                 width: displayWidth,
                 height: displayHeight,
                 child: AnimatedCrossFade(
@@ -191,7 +197,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                     crossFadeState: rDashState == RDashState.offline ? CrossFadeState.showSecond : CrossFadeState.showFirst,
                   ),
                   crossFadeState: rDashState == RDashState.booting ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-                ))));
+                )))));
     return scaffold;
   }
 
