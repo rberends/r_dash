@@ -104,6 +104,9 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                                 child: FadeInImage.assetNetwork(
                                   placeholder: 'assets/placeholder.jpeg',
                                   image: url,
+                                  imageErrorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                                    return Image.asset( 'assets/placeholder.jpeg',  fit: BoxFit.cover);
+                                  },
                                   fit: BoxFit.cover,
                                   key: UniqueKey(),
                                 ),
