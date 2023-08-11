@@ -1,4 +1,4 @@
-![Header](https://github.com/rberends/r_dash/blob/0a28c9cf9649c6eed0f4e2c9fbffbd149dfc2473/readme/index.png)
+![Header](https://github.com/rberends/r_dash/blob/17b9131fda494367d88693bf511b97d9bfb6bd41/readme/index.png)
 
 # r_dash
 An info dashboard Flutter app, meant to be run on a display tied to a Raspberry (Zero 2W). It displays the Dutch Rainfall radar from [Buienradar](https://www.buienradar.nl/) and real time train schedule from the [Nationale Spoorwegen](https://www.ns.nl/) for a specific station of your choosing.
