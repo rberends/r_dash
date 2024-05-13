@@ -10,7 +10,7 @@ I.e. the dashboard tells you when to leave for the train and whether to bring a 
 
 - Flutter
 - Flutter-pi
-- A Display - I use a basic HDMI model as well, but should work with any other no problem.
+- A Display - I use a basic HDMI model, but should work with any other no problem.
 - A Raspberry in kiosk mode with the Lite OS. I use the Zero 2w myself.
 
 ## Notes
